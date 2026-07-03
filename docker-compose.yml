@@ -1,0 +1,61 @@
+# Lumora — local development infrastructure (D4: local-first).
+# Requires Docker Desktop. Bring up with: pnpm infra:up  (docker compose up -d)
+#
+# Services mirror the cloud interfaces so there is no code drift (Risk: local↔cloud drift):
+#   mongo   -> MongoDB Atlas
+#   redis   -> Upstash / managed Redis
+#   minio   -> AWS S3
+#   mailpit -> Resend/SendGrid (SMTP catch-all with a web inbox)
+services:
+  mongo:
+    image: mongo:7
+    container_name: lumora-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./.data/mongo:/data/db
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: lumora-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./.data/redis:/data
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: lumora-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: lumora
+      MINIO_ROOT_PASSWORD: lumora-secret
+    ports:
+      - "9000:9000" # S3 API
+      - "9001:9001" # web console
+    volumes:
+      - ./.data/minio:/data
+    restart: unless-stopped
+
+  # Creates the local bucket on startup so the app has somewhere to upload to.
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc alias set local http://minio:9000 lumora lumora-secret) do echo 'waiting for minio...'; sleep 2; done;
+      /usr/bin/mc mb -p local/lumora-local;
+      /usr/bin/mc anonymous set download local/lumora-local;
+      exit 0;
+      "
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: lumora-mailpit
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # web inbox -> http://localhost:8025
+    restart: unless-stopped

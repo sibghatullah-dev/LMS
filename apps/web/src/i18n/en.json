@@ -1,0 +1,71 @@
+{
+  "common": {
+    "appName": "Lumora",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading…"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "submit": "Sign in",
+      "forgot": "Forgot your password?",
+      "noAccount": "New to Lumora?",
+      "register": "Create an account"
+    },
+    "register": {
+      "title": "Create your account",
+      "role": "I am a",
+      "roleStudent": "Student",
+      "roleInstructor": "Instructor",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "login": "Sign in",
+      "success": "Account created. Check your email to verify your address."
+    },
+    "verify": {
+      "title": "Verify your email",
+      "verifying": "Verifying your email…",
+      "success": "Your email is verified. You can now sign in.",
+      "failed": "This verification link is invalid or has expired.",
+      "goToLogin": "Go to sign in"
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "instructions": "Enter your email and we'll send a reset link.",
+      "submit": "Send reset link",
+      "sent": "If that email is registered, a reset link is on its way."
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "newPassword": "New password",
+      "submit": "Update password",
+      "success": "Your password is updated. You can now sign in."
+    }
+  },
+  "profile": {
+    "title": "Profile & settings",
+    "notifications": "Notification preferences",
+    "channelEmail": "Email",
+    "channelInApp": "In-app",
+    "channelSms": "SMS",
+    "saved": "Saved"
+  },
+  "admin": {
+    "users": {
+      "title": "User management",
+      "columnName": "Name",
+      "columnEmail": "Email",
+      "columnRole": "Role",
+      "columnStatus": "Status",
+      "empty": "No users yet."
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again."
+  }
+}

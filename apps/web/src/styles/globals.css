@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-paper-50 text-ink-900 font-sans antialiased;
+  }
+
+  /* §2.5 / §6: focus is never ambiguous — distinct focus-ring token, 2px offset,
+     never removed without a replacement. */
+  :focus-visible {
+    outline: 2px solid theme('colors.focus-ring');
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* Tabular numerals for scores/timestamps/percentages (§2.3 Data/Utility). */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* §2.6 + §6: prefers-reduced-motion disables both signature animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,1743 @@
+openapi: 3.0.3
+info:
+  title: LearnSphere LMS API
+  description: >
+    REST API for the LearnSphere Learning Management System. All endpoints are
+    served from the Next.js API layer (Route Handlers) under the base path
+    /api/v1. Authentication uses JWT bearer tokens (short-lived access token +
+    httpOnly refresh token cookie). Role-based access control (RBAC) is
+    enforced server-side on every endpoint; required roles are noted per
+    operation.
+  version: "1.0.0"
+  contact:
+    name: LearnSphere Engineering
+servers:
+  - url: https://api.learnsphere.app/api/v1
+    description: Production
+  - url: https://staging.learnsphere.app/api/v1
+    description: Staging
+  - url: http://localhost:3000/api/v1
+    description: Local development
+
+tags:
+  - name: Auth
+  - name: Users
+  - name: Courses
+  - name: Enrollments
+  - name: Content
+  - name: Assessments
+  - name: Submissions
+  - name: LiveSessions
+  - name: Attendance
+  - name: Forums
+  - name: Messages
+  - name: Notifications
+  - name: Gamification
+  - name: Certificates
+  - name: Events
+  - name: Admin
+  - name: Reports
+
+security:
+  - bearerAuth: []
+
+paths:
+
+  # ============================= AUTH =============================
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, fullName, role]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password, minLength: 8 }
+                fullName: { type: string }
+                role: { type: string, enum: [student, instructor] }
+                institutionSlug: { type: string }
+      responses:
+        '201':
+          description: User created; verification email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '409':
+          description: Email already registered
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Log in with email and password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken: { type: string }
+                  user: { $ref: '#/components/schemas/User' }
+          headers:
+            Set-Cookie:
+              description: httpOnly refresh token cookie
+              schema: { type: string }
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '423':
+          description: Account temporarily locked (FR-AUTH-08)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Exchange a valid refresh token cookie for a new access token
+      security: []
+      responses:
+        '200':
+          description: New access token issued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken: { type: string }
+        '401':
+          description: Refresh token missing/invalid/expired
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Invalidate the current refresh token
+      responses:
+        '204': { description: Logged out }
+
+  /auth/password-reset/request:
+    post:
+      tags: [Auth]
+      summary: Request a password reset email
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '202': { description: Reset email sent if the account exists (no user-existence leak) }
+
+  /auth/password-reset/confirm:
+    post:
+      tags: [Auth]
+      summary: Complete password reset using the emailed token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, newPassword]
+              properties:
+                token: { type: string }
+                newPassword: { type: string, minLength: 8 }
+      responses:
+        '200': { description: Password updated }
+        '400': { description: Invalid or expired token }
+
+  # ============================= USERS =============================
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Get the current authenticated user's profile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+    patch:
+      tags: [Users]
+      summary: Update the current user's profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName: { type: string }
+                avatarUrl: { type: string }
+                locale: { type: string }
+                notificationPreferences:
+                  $ref: '#/components/schemas/NotificationPreferences'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+
+  /users/{userId}:
+    get:
+      tags: [Users]
+      summary: Get a user's public profile (Admin/Instructor context)
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '404': { description: Not found }
+
+  # ============================= COURSES =============================
+  /courses:
+    get:
+      tags: [Courses]
+      summary: List/search published courses (catalog)
+      security: []
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+          description: Free-text search on title/description
+        - name: category
+          in: query
+          schema: { type: string }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCourses'
+    post:
+      tags: [Courses]
+      summary: Create a new course (Instructor)
+      description: Requires role Instructor. Course is created in `draft` status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CourseCreateRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Course' }
+        '403': { description: Forbidden — requires Instructor role }
+
+  /courses/{courseId}:
+    get:
+      tags: [Courses]
+      summary: Get full course detail (structure, modules, lessons)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Course' }
+        '404': { description: Not found }
+    patch:
+      tags: [Courses]
+      summary: Update course metadata or structure (owning Instructor only)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CourseUpdateRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Course' }
+        '403': { description: Forbidden — not the owning instructor }
+
+  /courses/{courseId}/submit-for-review:
+    post:
+      tags: [Courses]
+      summary: Submit a draft course for Admin approval (FR-COURSE-07)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200':
+          description: Course status set to pending_review
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Course' }
+
+  /courses/{courseId}/clone-as-template:
+    post:
+      tags: [Courses]
+      summary: Clone this course into a new draft course (reusable template, FR-COURSE-05)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '201':
+          description: New draft course created from template
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Course' }
+
+  /courses/{courseId}/archive:
+    post:
+      tags: [Courses]
+      summary: Archive a course (hides from new enrollment)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200': { description: Course archived }
+
+  # ============================= ENROLLMENTS =============================
+  /courses/{courseId}/enrollments:
+    get:
+      tags: [Enrollments]
+      summary: List enrollments for a course (Instructor/Admin)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+        - name: status
+          in: query
+          schema: { $ref: '#/components/schemas/EnrollmentStatus' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Enrollment' }
+    post:
+      tags: [Enrollments]
+      summary: Self-enroll (Student) or bulk-enroll (Instructor/Admin)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                studentIds:
+                  type: array
+                  items: { type: string, format: uuid }
+                  description: Provided by Instructor/Admin for bulk enrollment; omitted for self-enroll
+      responses:
+        '201':
+          description: Enrollment(s) created (status depends on course.enrollmentMode)
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Enrollment' }
+        '409': { description: Already enrolled }
+
+  /enrollments/{enrollmentId}/approve:
+    post:
+      tags: [Enrollments]
+      summary: Approve a pending enrollment request
+      parameters:
+        - $ref: '#/components/parameters/EnrollmentId'
+      responses:
+        '200': { description: Enrollment approved and set to active }
+
+  /enrollments/{enrollmentId}/reject:
+    post:
+      tags: [Enrollments]
+      summary: Reject a pending enrollment request
+      parameters:
+        - $ref: '#/components/parameters/EnrollmentId'
+      responses:
+        '200': { description: Enrollment rejected }
+
+  /enrollments/{enrollmentId}/drop:
+    post:
+      tags: [Enrollments]
+      summary: Withdraw a student from a course (FR-ENROLL-05)
+      parameters:
+        - $ref: '#/components/parameters/EnrollmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string }
+      responses:
+        '200': { description: Enrollment set to dropped; logged to audit trail }
+
+  /me/enrollments:
+    get:
+      tags: [Enrollments]
+      summary: List the current student's enrollments (active/past)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Enrollment' }
+
+  # ============================= CONTENT =============================
+  /content/upload-url:
+    post:
+      tags: [Content]
+      summary: Request a pre-signed URL to upload a content asset (video/audio/document)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fileName, mimeType, sizeBytes]
+              properties:
+                fileName: { type: string }
+                mimeType: { type: string }
+                sizeBytes: { type: integer }
+      responses:
+        '200':
+          description: Pre-signed upload URL and the storage key to reference once the upload completes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadUrl: { type: string, format: uri }
+                  storageKey: { type: string }
+        '413': { description: File exceeds configured size limit }
+        '415': { description: Unsupported media type }
+
+  /courses/{courseId}/lessons/{lessonId}/progress:
+    put:
+      tags: [Content]
+      summary: Upsert the current student's progress on a lesson
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+        - name: lessonId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                percentConsumed: { type: number, minimum: 0, maximum: 100 }
+                status: { type: string, enum: [not_started, in_progress, completed] }
+      responses:
+        '200':
+          description: Progress recorded
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LessonProgress' }
+
+  # ============================= ASSESSMENTS =============================
+  /courses/{courseId}/assessments:
+    get:
+      tags: [Assessments]
+      summary: List assessments (assignments/quizzes) for a course
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Assessment' }
+    post:
+      tags: [Assessments]
+      summary: Create an assignment or quiz (Instructor)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AssessmentCreateRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Assessment' }
+
+  /assessments/{assessmentId}:
+    get:
+      tags: [Assessments]
+      summary: Get assessment detail
+      parameters:
+        - $ref: '#/components/parameters/AssessmentId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Assessment' }
+    patch:
+      tags: [Assessments]
+      summary: Update an assessment (creates a new revision if submissions already exist — DDD §5)
+      parameters:
+        - $ref: '#/components/parameters/AssessmentId'
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AssessmentUpdateRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Assessment' }
+
+  # ============================= SUBMISSIONS =============================
+  /assessments/{assessmentId}/submissions:
+    get:
+      tags: [Submissions]
+      summary: List submissions for an assessment (Instructor grading queue)
+      parameters:
+        - $ref: '#/components/parameters/AssessmentId'
+        - name: status
+          in: query
+          schema: { type: string, enum: [submitted, auto_graded, grading, graded] }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Submission' }
+    post:
+      tags: [Submissions]
+      summary: Submit a response to an assignment or quiz (Student)
+      parameters:
+        - $ref: '#/components/parameters/AssessmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SubmissionCreateRequest' }
+      responses:
+        '201':
+          description: Submitted (objective questions auto-graded immediately)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Submission' }
+        '409': { description: Submission window closed and late submission not allowed }
+
+  /submissions/{submissionId}:
+    get:
+      tags: [Submissions]
+      summary: Get a single submission (owner student, or Instructor of the course)
+      parameters:
+        - $ref: '#/components/parameters/SubmissionId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Submission' }
+
+  /submissions/{submissionId}/grade:
+    patch:
+      tags: [Submissions]
+      summary: Grade a submission (rubric scores and/or total score + comment)
+      parameters:
+        - $ref: '#/components/parameters/SubmissionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/GradeRequest' }
+      responses:
+        '200':
+          description: Graded; student notified; audit log entry written
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Submission' }
+
+  /assessments/{assessmentId}/submissions/bulk-grade:
+    post:
+      tags: [Submissions]
+      summary: Apply a grade/comment template to multiple submissions (FR-ASSESS-07)
+      parameters:
+        - $ref: '#/components/parameters/AssessmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [submissionIds, totalScore]
+              properties:
+                submissionIds:
+                  type: array
+                  items: { type: string }
+                totalScore: { type: number }
+                instructorComment: { type: string }
+      responses:
+        '200': { description: Submissions graded in bulk }
+
+  # ============================= LIVE SESSIONS =============================
+  /courses/{courseId}/live-sessions:
+    get:
+      tags: [LiveSessions]
+      summary: List scheduled/past live sessions for a course
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/LiveSession' }
+    post:
+      tags: [LiveSessions]
+      summary: Schedule a live session (Instructor)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LiveSessionCreateRequest' }
+      responses:
+        '201':
+          description: Scheduled. If deliveryMode is zoom/ms_teams, the meeting is created via the provider API synchronously.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LiveSession' }
+
+  /live-sessions/{sessionId}/start:
+    post:
+      tags: [LiveSessions]
+      summary: Start a native session (Instructor) — initializes the WebRTC room
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Session status set to live; room initialized
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LiveSession' }
+
+  /live-sessions/{sessionId}/end:
+    post:
+      tags: [LiveSessions]
+      summary: End a native session — finalizes recording, computes attendance
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200': { description: Session ended; recording processing queued }
+
+  /live-sessions/{sessionId}/join-token:
+    get:
+      tags: [LiveSessions]
+      summary: Get a short-lived token to join a native session's WebRTC room
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  joinToken: { type: string }
+                  mediaServiceUrl: { type: string, format: uri }
+        '403': { description: Not enrolled in this course }
+
+  /live-sessions/{sessionId}/polls:
+    post:
+      tags: [LiveSessions]
+      summary: Launch an in-session poll (Instructor, native mode only)
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [question, options]
+              properties:
+                question: { type: string }
+                options:
+                  type: array
+                  items: { type: string }
+      responses:
+        '201': { description: Poll broadcast to session participants }
+
+  # ============================= ATTENDANCE =============================
+  /live-sessions/{sessionId}/attendance:
+    get:
+      tags: [Attendance]
+      summary: Get attendance records for a session (Instructor/Admin)
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AttendanceRecord' }
+
+  /attendance/{attendanceId}:
+    patch:
+      tags: [Attendance]
+      summary: Manually override an attendance record (FR-LIVE-11)
+      parameters:
+        - $ref: '#/components/parameters/AttendanceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                attendancePercent: { type: number }
+                reason: { type: string }
+      responses:
+        '200':
+          description: Updated; logged to audit trail
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AttendanceRecord' }
+
+  # ============================= FORUMS =============================
+  /courses/{courseId}/forum-threads:
+    get:
+      tags: [Forums]
+      summary: List forum threads for a course
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ForumThread' }
+    post:
+      tags: [Forums]
+      summary: Create a new forum thread
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, body]
+              properties:
+                title: { type: string }
+                body: { type: string }
+                isQuestion: { type: boolean, default: false }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ForumThread' }
+
+  /forum-threads/{threadId}/posts:
+    get:
+      tags: [Forums]
+      summary: List posts/replies in a thread
+      parameters:
+        - $ref: '#/components/parameters/ThreadId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ForumPost' }
+    post:
+      tags: [Forums]
+      summary: Reply to a thread
+      parameters:
+        - $ref: '#/components/parameters/ThreadId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [body]
+              properties:
+                body: { type: string }
+                parentPostId: { type: string }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ForumPost' }
+
+  /forum-threads/{threadId}/accept-answer/{postId}:
+    post:
+      tags: [Forums]
+      summary: Mark a post as the accepted answer (Instructor, Q&A threads)
+      parameters:
+        - $ref: '#/components/parameters/ThreadId'
+        - name: postId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Post marked as accepted answer }
+
+  # ============================= MESSAGES =============================
+  /conversations:
+    get:
+      tags: [Messages]
+      summary: List the current user's conversations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Conversation' }
+    post:
+      tags: [Messages]
+      summary: Start a new direct or group conversation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [participantIds]
+              properties:
+                participantIds:
+                  type: array
+                  items: { type: string }
+                type: { type: string, enum: [direct, group], default: direct }
+                courseId: { type: string }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Conversation' }
+
+  /conversations/{conversationId}/messages:
+    get:
+      tags: [Messages]
+      summary: List messages in a conversation (paginated, newest last)
+      parameters:
+        - $ref: '#/components/parameters/ConversationId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Message' }
+    post:
+      tags: [Messages]
+      summary: Send a message (also broadcast over WebSocket to online participants)
+      parameters:
+        - $ref: '#/components/parameters/ConversationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [body]
+              properties:
+                body: { type: string }
+      responses:
+        '201':
+          description: Sent
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Message' }
+
+  # ============================= NOTIFICATIONS =============================
+  /notifications:
+    get:
+      tags: [Notifications]
+      summary: List the current user's in-app notification feed
+      parameters:
+        - name: unreadOnly
+          in: query
+          schema: { type: boolean, default: false }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Notification' }
+
+  /notifications/{notificationId}/read:
+    post:
+      tags: [Notifications]
+      summary: Mark a notification as read
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Marked read }
+
+  /courses/{courseId}/announcements:
+    post:
+      tags: [Notifications]
+      summary: Broadcast an announcement to all students in a course (FR-NOTIFY-05)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, body]
+              properties:
+                title: { type: string }
+                body: { type: string }
+      responses:
+        '202': { description: Announcement queued for delivery to all enrolled students }
+
+  # ============================= GAMIFICATION =============================
+  /courses/{courseId}/leaderboard:
+    get:
+      tags: [Gamification]
+      summary: Get the course leaderboard (excludes opted-out students)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userId: { type: string }
+                    fullName: { type: string }
+                    points: { type: integer }
+                    rank: { type: integer }
+
+  /me/badges:
+    get:
+      tags: [Gamification]
+      summary: List badges earned by the current user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/UserBadge' }
+
+  # ============================= CERTIFICATES =============================
+  /me/certificates:
+    get:
+      tags: [Certificates]
+      summary: List certificates earned by the current user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Certificate' }
+
+  /certificates/verify/{verificationCode}:
+    get:
+      tags: [Certificates]
+      summary: Publicly verify a certificate by its verification code
+      security: []
+      parameters:
+        - name: verificationCode
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Certificate is valid
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Certificate' }
+        '404': { description: No certificate found for this code }
+
+  # ============================= EVENTS =============================
+  /events:
+    get:
+      tags: [Events]
+      summary: List upcoming events/webinars
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Event' }
+    post:
+      tags: [Events]
+      summary: Create an event/webinar (Instructor/Admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EventCreateRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Event' }
+
+  /events/{eventId}/register:
+    post:
+      tags: [Events]
+      summary: Register the current user for an event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '201': { description: Registered }
+        '409': { description: Event at capacity or already registered }
+
+  # ============================= ADMIN =============================
+  /admin/courses/pending-review:
+    get:
+      tags: [Admin]
+      summary: List courses awaiting approval
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Course' }
+
+  /admin/courses/{courseId}/approve:
+    post:
+      tags: [Admin]
+      summary: Approve a pending course (FR-COURSE-07)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200': { description: Course published }
+
+  /admin/courses/{courseId}/reject:
+    post:
+      tags: [Admin]
+      summary: Reject a pending course with a required comment (FR-COURSE-08)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comment]
+              properties:
+                comment: { type: string }
+      responses:
+        '200': { description: Course returned to draft }
+
+  /admin/users:
+    get:
+      tags: [Admin]
+      summary: List/search users within the institution
+      parameters:
+        - name: role
+          in: query
+          schema: { type: string }
+        - name: q
+          in: query
+          schema: { type: string }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/User' }
+
+  /admin/users/{userId}/role:
+    patch:
+      tags: [Admin]
+      summary: Change a user's role (logged to audit trail)
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role: { type: string, enum: [admin, instructor, student, alumnus] }
+      responses:
+        '200':
+          description: Role updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+
+  /admin/users/{userId}/deactivate:
+    post:
+      tags: [Admin]
+      summary: Deactivate a user account
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200': { description: User deactivated; logged to audit trail }
+
+  /admin/audit-logs:
+    get:
+      tags: [Admin]
+      summary: Query the audit log (FR-ADMIN-03)
+      parameters:
+        - name: actorId
+          in: query
+          schema: { type: string }
+        - name: action
+          in: query
+          schema: { type: string }
+        - name: from
+          in: query
+          schema: { type: string, format: date-time }
+        - name: to
+          in: query
+          schema: { type: string, format: date-time }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AuditLogEntry' }
+
+  # ============================= REPORTS =============================
+  /reports/courses/{courseId}/summary:
+    get:
+      tags: [Reports]
+      summary: Instructor dashboard summary for a course (enrollment, avg grade, attendance, pending grading)
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CourseReportSummary' }
+
+  /reports/institution/summary:
+    get:
+      tags: [Reports]
+      summary: Admin dashboard — platform-wide usage and compliance summary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InstitutionReportSummary' }
+
+  /reports/courses/{courseId}/export:
+    get:
+      tags: [Reports]
+      summary: Export a course report (grades/attendance) as CSV
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+        - name: format
+          in: query
+          schema: { type: string, enum: [csv, pdf], default: csv }
+      responses:
+        '200':
+          description: File stream
+          content:
+            text/csv:
+              schema: { type: string, format: binary }
+            application/pdf:
+              schema: { type: string, format: binary }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    CourseId:
+      name: courseId
+      in: path
+      required: true
+      schema: { type: string }
+    UserId:
+      name: userId
+      in: path
+      required: true
+      schema: { type: string }
+    EnrollmentId:
+      name: enrollmentId
+      in: path
+      required: true
+      schema: { type: string }
+    AssessmentId:
+      name: assessmentId
+      in: path
+      required: true
+      schema: { type: string }
+    SubmissionId:
+      name: submissionId
+      in: path
+      required: true
+      schema: { type: string }
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema: { type: string }
+    AttendanceId:
+      name: attendanceId
+      in: path
+      required: true
+      schema: { type: string }
+    ThreadId:
+      name: threadId
+      in: path
+      required: true
+      schema: { type: string }
+    ConversationId:
+      name: conversationId
+      in: path
+      required: true
+      schema: { type: string }
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, default: 1, minimum: 1 }
+    PageSize:
+      name: pageSize
+      in: query
+      schema: { type: integer, default: 20, maximum: 100 }
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code: { type: string }
+            message: { type: string }
+
+    NotificationPreferences:
+      type: object
+      properties:
+        email: { type: boolean }
+        sms: { type: boolean }
+        inApp: { type: boolean }
+
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        fullName: { type: string }
+        role: { type: string, enum: [super_admin, admin, instructor, student, alumnus] }
+        status: { type: string, enum: [pending_verification, active, suspended, deactivated] }
+        avatarUrl: { type: string }
+        locale: { type: string }
+        notificationPreferences: { $ref: '#/components/schemas/NotificationPreferences' }
+        createdAt: { type: string, format: date-time }
+
+    ContentItem:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string, enum: [video, audio, document, article, downloadable, embedded_quiz] }
+        title: { type: string }
+        streamingManifestUrl: { type: string }
+        durationSeconds: { type: integer }
+        order: { type: integer }
+
+    Lesson:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        order: { type: integer }
+        contentItems:
+          type: array
+          items: { $ref: '#/components/schemas/ContentItem' }
+
+    Module:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        order: { type: integer }
+        releaseRule:
+          type: object
+          properties:
+            type: { type: string, enum: [immediate, fixed_date, offset_from_enrollment] }
+            date: { type: string, format: date-time }
+            offsetDays: { type: integer }
+        lessons:
+          type: array
+          items: { $ref: '#/components/schemas/Lesson' }
+
+    Course:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        category: { type: string }
+        instructorId: { type: string }
+        status: { type: string, enum: [draft, pending_review, published, rejected, archived] }
+        enrollmentMode: { type: string, enum: [open, approval_required] }
+        enrollmentCapacity: { type: integer, nullable: true }
+        isTemplate: { type: boolean }
+        completionCriteria:
+          type: object
+          properties:
+            minGradePercent: { type: number }
+            minAttendancePercent: { type: number }
+        modules:
+          type: array
+          items: { $ref: '#/components/schemas/Module' }
+        version: { type: integer }
+        createdAt: { type: string, format: date-time }
+        publishedAt: { type: string, format: date-time, nullable: true }
+
+    CourseCreateRequest:
+      type: object
+      required: [title, description, category]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        category: { type: string }
+        language: { type: string }
+        enrollmentMode: { type: string, enum: [open, approval_required] }
+        enrollmentCapacity: { type: integer }
+
+    CourseUpdateRequest:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: string }
+        modules:
+          type: array
+          items: { $ref: '#/components/schemas/Module' }
+        completionCriteria:
+          type: object
+          properties:
+            minGradePercent: { type: number }
+            minAttendancePercent: { type: number }
+
+    PaginatedCourses:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Course' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        totalItems: { type: integer }
+
+    EnrollmentStatus:
+      type: string
+      enum: [pending_approval, active, completed, dropped, rejected]
+
+    Enrollment:
+      type: object
+      properties:
+        id: { type: string }
+        courseId: { type: string }
+        studentId: { type: string }
+        status: { $ref: '#/components/schemas/EnrollmentStatus' }
+        enrolledAt: { type: string, format: date-time }
+        completedAt: { type: string, format: date-time, nullable: true }
+        finalGradePercent: { type: number, nullable: true }
+
+    LessonProgress:
+      type: object
+      properties:
+        id: { type: string }
+        lessonId: { type: string }
+        status: { type: string, enum: [not_started, in_progress, completed] }
+        percentConsumed: { type: number }
+        lastAccessedAt: { type: string, format: date-time }
+
+    RubricCriterion:
+      type: object
+      properties:
+        criterion: { type: string }
+        maxPoints: { type: number }
+        description: { type: string }
+
+    QuizQuestion:
+      type: object
+      properties:
+        id: { type: string }
+        questionType: { type: string, enum: [multiple_choice, true_false, matching, essay] }
+        prompt: { type: string }
+        options:
+          type: array
+          items: { type: string }
+        points: { type: number }
+
+    Assessment:
+      type: object
+      properties:
+        id: { type: string }
+        courseId: { type: string }
+        type: { type: string, enum: [assignment, quiz] }
+        title: { type: string }
+        instructions: { type: string }
+        dueAt: { type: string, format: date-time }
+        allowLateSubmission: { type: boolean }
+        maxScore: { type: number }
+        weightPercent: { type: number }
+        submissionTypes:
+          type: array
+          items: { type: string, enum: [file, text] }
+        rubric:
+          type: array
+          items: { $ref: '#/components/schemas/RubricCriterion' }
+        questions:
+          type: array
+          items: { $ref: '#/components/schemas/QuizQuestion' }
+        status: { type: string, enum: [draft, published, closed] }
+
+    AssessmentCreateRequest:
+      type: object
+      required: [type, title, maxScore]
+      properties:
+        type: { type: string, enum: [assignment, quiz] }
+        title: { type: string }
+        instructions: { type: string }
+        dueAt: { type: string, format: date-time }
+        allowLateSubmission: { type: boolean }
+        maxScore: { type: number }
+        weightPercent: { type: number }
+        submissionTypes:
+          type: array
+          items: { type: string, enum: [file, text] }
+        rubric:
+          type: array
+          items: { $ref: '#/components/schemas/RubricCriterion' }
+        questions:
+          type: array
+          items: { $ref: '#/components/schemas/QuizQuestion' }
+
+    AssessmentUpdateRequest:
+      type: object
+      properties:
+        title: { type: string }
+        instructions: { type: string }
+        dueAt: { type: string, format: date-time }
+        maxScore: { type: number }
+        weightPercent: { type: number }
+        status: { type: string, enum: [draft, published, closed] }
+
+    SubmissionCreateRequest:
+      type: object
+      properties:
+        answers:
+          type: array
+          items:
+            type: object
+            properties:
+              questionId: { type: string }
+              response: { type: string }
+        textResponse: { type: string }
+        fileStorageKeys:
+          type: array
+          items: { type: string }
+
+    RubricScore:
+      type: object
+      properties:
+        criterion: { type: string }
+        pointsAwarded: { type: number }
+        comment: { type: string }
+
+    Submission:
+      type: object
+      properties:
+        id: { type: string }
+        assessmentId: { type: string }
+        studentId: { type: string }
+        submittedAt: { type: string, format: date-time }
+        isLate: { type: boolean }
+        status: { type: string, enum: [submitted, auto_graded, grading, graded] }
+        totalScore: { type: number, nullable: true }
+        totalScorePercent: { type: number, nullable: true }
+        instructorComment: { type: string, nullable: true }
+        rubricScores:
+          type: array
+          items: { $ref: '#/components/schemas/RubricScore' }
+        gradedAt: { type: string, format: date-time, nullable: true }
+
+    GradeRequest:
+      type: object
+      properties:
+        rubricScores:
+          type: array
+          items: { $ref: '#/components/schemas/RubricScore' }
+        totalScore: { type: number }
+        instructorComment: { type: string }
+
+    LiveSessionCreateRequest:
+      type: object
+      required: [title, scheduledStart, scheduledEnd, deliveryMode]
+      properties:
+        title: { type: string }
+        scheduledStart: { type: string, format: date-time }
+        scheduledEnd: { type: string, format: date-time }
+        deliveryMode: { type: string, enum: [native, zoom, ms_teams] }
+
+    LiveSession:
+      type: object
+      properties:
+        id: { type: string }
+        courseId: { type: string }
+        title: { type: string }
+        scheduledStart: { type: string, format: date-time }
+        scheduledEnd: { type: string, format: date-time }
+        deliveryMode: { type: string, enum: [native, zoom, ms_teams] }
+        status: { type: string, enum: [scheduled, live, ended, cancelled] }
+        externalMeeting:
+          type: object
+          nullable: true
+          properties:
+            provider: { type: string }
+            joinUrl: { type: string }
+        recording:
+          type: object
+          properties:
+            status: { type: string, enum: [not_available, processing, available] }
+            durationSeconds: { type: integer }
+
+    AttendanceRecord:
+      type: object
+      properties:
+        id: { type: string }
+        liveSessionId: { type: string }
+        studentId: { type: string }
+        joinedAt: { type: string, format: date-time }
+        leftAt: { type: string, format: date-time }
+        attendancePercent: { type: number }
+        source: { type: string, enum: [native_auto, provider_report, manual_override] }
+
+    ForumThread:
+      type: object
+      properties:
+        id: { type: string }
+        courseId: { type: string }
+        title: { type: string }
+        isQuestion: { type: boolean }
+        acceptedPostId: { type: string, nullable: true }
+        postCount: { type: integer }
+        lastActivityAt: { type: string, format: date-time }
+
+    ForumPost:
+      type: object
+      properties:
+        id: { type: string }
+        threadId: { type: string }
+        authorId: { type: string }
+        body: { type: string }
+        parentPostId: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+
+    Conversation:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string, enum: [direct, group] }
+        participantIds:
+          type: array
+          items: { type: string }
+        lastMessageAt: { type: string, format: date-time }
+
+    Message:
+      type: object
+      properties:
+        id: { type: string }
+        conversationId: { type: string }
+        senderId: { type: string }
+        body: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    Notification:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string }
+        title: { type: string }
+        body: { type: string }
+        isRead: { type: boolean }
+        createdAt: { type: string, format: date-time }
+
+    UserBadge:
+      type: object
+      properties:
+        id: { type: string }
+        badgeId: { type: string }
+        badgeName: { type: string }
+        iconUrl: { type: string }
+        awardedAt: { type: string, format: date-time }
+
+    Certificate:
+      type: object
+      properties:
+        id: { type: string }
+        studentId: { type: string }
+        courseId: { type: string }
+        verificationCode: { type: string }
+        issuedAt: { type: string, format: date-time }
+        finalGradePercent: { type: number }
+        downloadUrl: { type: string }
+
+    EventCreateRequest:
+      type: object
+      required: [title, startAt, endAt]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        startAt: { type: string, format: date-time }
+        endAt: { type: string, format: date-time }
+        capacity: { type: integer }
+        audience:
+          type: array
+          items: { type: string, enum: [student, instructor, alumnus] }
+
+    Event:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        startAt: { type: string, format: date-time }
+        endAt: { type: string, format: date-time }
+        capacity: { type: integer, nullable: true }
+        joinUrl: { type: string }
+
+    AuditLogEntry:
+      type: object
+      properties:
+        id: { type: string }
+        actorId: { type: string }
+        actorRole: { type: string }
+        action: { type: string }
+        targetEntity:
+          type: object
+          properties:
+            type: { type: string }
+            id: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    CourseReportSummary:
+      type: object
+      properties:
+        courseId: { type: string }
+        enrollmentCount: { type: integer }
+        activeCount: { type: integer }
+        completedCount: { type: integer }
+        averageGradePercent: { type: number }
+        averageAttendancePercent: { type: number }
+        pendingGradingCount: { type: integer }
+
+    InstitutionReportSummary:
+      type: object
+      properties:
+        totalUsers: { type: integer }
+        totalCourses: { type: integer }
+        pendingCourseApprovals: { type: integer }
+        activeEnrollments: { type: integer }
+        averagePlatformAttendancePercent: { type: number }
