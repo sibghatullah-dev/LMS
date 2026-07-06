@@ -11,7 +11,6 @@ import {
   verifyEmail,
 } from '../src/services/auth.service';
 import { verifyAccessToken, verifyRefreshToken } from '../src/services/token.service';
-import { DomainError } from '../src/errors';
 
 async function seedInstitution() {
   const inst = await InstitutionModel.create({
@@ -30,14 +29,15 @@ beforeEach(async () => {
 });
 
 describe('registration + email verification', () => {
-  it('registers a pending user and issues a verification token', async () => {
+  it('registers an active, email-verified user while verification is bypassed', async () => {
     const { user, verificationToken } = await register({
       email: 'Sara@example.com',
       password: 'password123',
       fullName: 'Sara Ahmed',
       role: 'student',
     });
-    expect(user.status).toBe('pending_verification');
+    expect(user.status).toBe('active');
+    expect(user.emailVerified).toBe(true);
     expect(user.email).toBe('sara@example.com'); // normalized
     expect(verificationToken).toHaveLength(64);
   });
@@ -53,18 +53,14 @@ describe('registration + email verification', () => {
     await expect(register(input)).rejects.toMatchObject({ httpStatus: 409 });
   });
 
-  it('blocks login until the email is verified, then allows it', async () => {
-    const { user, verificationToken } = await register({
+  it('allows login immediately after signup while verification is bypassed', async () => {
+    const { user } = await register({
       email: 'v@example.com',
       password: 'password123',
       fullName: 'V',
       role: 'student',
     });
-    await expect(
-      login({ email: 'v@example.com', password: 'password123' }),
-    ).rejects.toMatchObject({ httpStatus: 403 });
 
-    await verifyEmail({ userId: user.id, token: verificationToken });
     const result = await login({ email: 'v@example.com', password: 'password123' });
     expect(result.user.emailVerified).toBe(true);
 
@@ -75,28 +71,27 @@ describe('registration + email verification', () => {
     expect(refresh.userId).toBe(user.id);
   });
 
-  it('rejects an invalid verification token', async () => {
+  it('treats verification as idempotent for already-active signups', async () => {
     const { user } = await register({
-      email: 'bad@example.com',
+      email: 'already@example.com',
       password: 'password123',
-      fullName: 'Bad',
+      fullName: 'Already',
       role: 'student',
     });
-    await expect(verifyEmail({ userId: user.id, token: 'wrong' })).rejects.toBeInstanceOf(
-      DomainError,
-    );
+    await expect(verifyEmail({ userId: user.id, token: 'wrong' })).resolves.toMatchObject({
+      emailVerified: true,
+    });
   });
 });
 
 describe('login lockout (FR-AUTH-08)', () => {
   it('locks the account after too many failed attempts', async () => {
-    const { user, verificationToken } = await register({
+    const { user } = await register({
       email: 'lock@example.com',
       password: 'correct-password',
       fullName: 'Lock',
       role: 'student',
     });
-    await verifyEmail({ userId: user.id, token: verificationToken });
 
     for (let i = 0; i < MAX_FAILED_LOGIN_ATTEMPTS; i++) {
       await expect(
@@ -116,13 +111,12 @@ describe('login lockout (FR-AUTH-08)', () => {
 
 describe('password reset (FR-AUTH-05)', () => {
   it('resets the password and invalidates existing sessions', async () => {
-    const { user, verificationToken } = await register({
+    const { user } = await register({
       email: 'reset@example.com',
       password: 'old-password',
       fullName: 'Reset',
       role: 'student',
     });
-    await verifyEmail({ userId: user.id, token: verificationToken });
 
     const oldSession = await login({ email: 'reset@example.com', password: 'old-password' });
     const oldRefresh = await verifyRefreshToken(oldSession.refreshToken);
@@ -159,19 +153,17 @@ describe('password reset (FR-AUTH-05)', () => {
 });
 
 describe('audit trail (FR-AUTH-09)', () => {
-  it('records register, verify, and login events', async () => {
-    const { user, verificationToken } = await register({
+  it('records register and login events', async () => {
+    const { user } = await register({
       email: 'audit@example.com',
       password: 'password123',
       fullName: 'Audit',
       role: 'student',
     });
-    await verifyEmail({ userId: user.id, token: verificationToken });
     await login({ email: 'audit@example.com', password: 'password123' });
 
     const actions = (await AuditLogModel.find({ actorId: user.id }).lean()).map((a) => a.action);
     expect(actions).toContain('auth.register');
-    expect(actions).toContain('auth.email_verified');
     expect(actions).toContain('auth.login_success');
   });
 });

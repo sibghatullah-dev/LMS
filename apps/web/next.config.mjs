@@ -17,6 +17,15 @@ const nextConfig = {
   // Server-only DB packages: keep them (and the driver's optional native deps)
   // out of the bundle so route handlers require them at runtime (Next 15).
   serverExternalPackages: ['mongoose', 'mongodb', 'bcryptjs'],
+  webpack(config) {
+    config.resolve.alias = {
+      ...(config.resolve.alias ?? {}),
+      // Optional MongoDB driver dependency for AWS IAM auth. Lumora local/dev
+      // does not use it; aliasing prevents noisy dev-server warnings.
+      aws4: false,
+    };
+    return config;
+  },
   // Linting runs as a dedicated root step (`pnpm lint`) in CI; skip the
   // redundant in-build pass (which also expects eslint-config-next).
   eslint: { ignoreDuringBuilds: true },

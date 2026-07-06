@@ -1,7 +1,6 @@
 import {
   ACCOUNT_LOCK_MINUTES,
   DEFAULT_INSTITUTION_SLUG,
-  EMAIL_VERIFICATION_TTL_HOURS,
   MAX_FAILED_LOGIN_ATTEMPTS,
   PASSWORD_RESET_TTL_MINUTES,
   loadEnv,
@@ -54,7 +53,7 @@ function minutesFromNow(minutes: number): Date {
   return new Date(Date.now() + minutes * 60_000);
 }
 
-/** FR-AUTH-01 — register + issue an email-verification token. */
+/** FR-AUTH-01 — register. Email verification is temporarily bypassed for local MVP testing. */
 export async function register(
   input: RegisterInput,
   meta: RequestMeta = {},
@@ -73,14 +72,18 @@ export async function register(
     authProviders: ['credentials'],
     fullName: input.fullName,
     role: input.role,
-    status: 'pending_verification',
-    security: {
-      emailVerificationTokenHash: hashToken(rawToken),
-      emailVerificationExpiresAt: minutesFromNow(EMAIL_VERIFICATION_TTL_HOURS * 60),
-    },
+    status: 'active',
+    emailVerifiedAt: new Date(),
+    // TODO: restore email verification before production.
+    // status: 'pending_verification',
+    // security: {
+    //   emailVerificationTokenHash: hashToken(rawToken),
+    //   emailVerificationExpiresAt: minutesFromNow(EMAIL_VERIFICATION_TTL_HOURS * 60),
+    // },
   });
 
-  await sendVerificationEmail(meta.emailPort ?? noopEmailPort, email, String(user._id), rawToken);
+  // TODO: restore email verification before production.
+  // await sendVerificationEmail(meta.emailPort ?? noopEmailPort, email, String(user._id), rawToken);
   await writeAudit({
     institutionId,
     actorId: user._id,
@@ -171,9 +174,10 @@ export async function login(
     throw invalid();
   }
 
-  if (user.status === 'pending_verification') {
-    throw ForbiddenError('Please verify your email address before signing in.');
-  }
+  // TODO: restore email verification before production.
+  // if (user.status === 'pending_verification') {
+  //   throw ForbiddenError('Please verify your email address before signing in.');
+  // }
   if (user.status === 'suspended' || user.status === 'deactivated') {
     throw ForbiddenError('This account is not active.');
   }
@@ -296,21 +300,6 @@ async function issueTokens(user: {
     tokenVersion: user.tokenVersion ?? 0,
   });
   return { accessToken, refreshToken };
-}
-
-async function sendVerificationEmail(
-  emailPort: EmailPort,
-  to: string,
-  userId: string,
-  rawToken: string,
-): Promise<void> {
-  const url = `${loadEnv().APP_URL}/verify-email?uid=${userId}&token=${rawToken}`;
-  await emailPort.send({
-    to,
-    subject: 'Verify your Lumora email',
-    text: `Verify your email: ${url}`,
-    html: `<p>Welcome to Lumora. Verify your email to activate your account:</p><p><a href="${url}">Verify email</a></p>`,
-  });
 }
 
 async function sendResetEmail(

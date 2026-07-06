@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import { loadEnv } from '@lumora/config';
 
+mongoose.set('strictQuery', true);
+mongoose.set('bufferCommands', false);
+
 /**
  * Mongoose connection singleton (DDD §1, SAD §4.6).
  *
@@ -18,16 +21,26 @@ const cache: MongooseCache = globalForMongoose.__lumoraMongoose ?? { conn: null,
 globalForMongoose.__lumoraMongoose = cache;
 
 export async function connectToDatabase(): Promise<typeof mongoose> {
-  if (cache.conn) return cache.conn;
+  if (cache.conn && mongoose.connection.readyState === 1) return cache.conn;
+  if (cache.conn && mongoose.connection.readyState !== 1) {
+    cache.conn = null;
+    cache.promise = null;
+  }
   if (!cache.promise) {
     const { MONGODB_URI } = loadEnv();
-    mongoose.set('strictQuery', true);
     cache.promise = mongoose.connect(MONGODB_URI, {
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 10_000,
+      serverSelectionTimeoutMS: 3_000,
+      heartbeatFrequencyMS: 10_000,
     });
   }
-  cache.conn = await cache.promise;
+  try {
+    cache.conn = await cache.promise;
+  } catch (err) {
+    cache.promise = null;
+    cache.conn = null;
+    throw err;
+  }
   return cache.conn;
 }
 

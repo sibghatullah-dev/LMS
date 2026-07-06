@@ -44,7 +44,16 @@ async function seed(): Promise<void> {
 
   const existing = await UserModel.findOne({ institutionId: institution._id, email: adminEmail });
   if (existing) {
-    console.log(`[seed] super admin ${adminEmail} already exists — skipping`);
+    existing.fullName = process.env.SEED_ADMIN_NAME ?? existing.fullName ?? 'Platform Admin';
+    existing.role = 'super_admin';
+    existing.status = 'active';
+    existing.emailVerifiedAt = existing.emailVerifiedAt ?? new Date();
+    existing.passwordHash = await hashPassword(adminPassword);
+    existing.failedLoginAttempts = 0;
+    existing.lockedUntil = undefined;
+    existing.tokenVersion = (existing.tokenVersion ?? 0) + 1;
+    await existing.save();
+    console.log(`[seed] super admin ${adminEmail} already exists — reset credentials/status`);
   } else {
     await UserModel.create({
       institutionId: institution._id,

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { AppShell } from '@/components/app-shell';
 import { DataTable, StatusChip, toneForStatus, type Column } from '@/components/ui';
 import { useAuthStore } from '@/lib/auth-store';
 import { useSession } from '@/lib/use-session';
@@ -47,23 +48,25 @@ export default function AdminUsersPage() {
   ];
 
   return (
-    <main className="mx-auto max-w-content px-6 py-12">
-      <div className="mb-6 flex items-baseline justify-between">
-        <h1 className="font-display text-2xl font-semibold text-ink-900">
-          {t('admin.users.title')}
-        </h1>
-        <span className="font-mono text-sm tabular-nums text-neutral-600">{total} users</span>
-      </div>
-      {loading ? (
-        <p className="text-neutral-600">{t('common.loading')}</p>
-      ) : (
-        <DataTable
-          columns={columns}
-          rows={users}
-          rowKey={(u) => u.id}
-          emptyMessage={t('admin.users.empty')}
-        />
-      )}
-    </main>
+    <AppShell allow={['admin', 'super_admin']}>
+      <main className="mx-auto max-w-content px-6 py-12">
+        <div className="mb-6 flex items-baseline justify-between">
+          <h1 className="font-display text-2xl font-semibold text-ink-900">
+            {t('admin.users.title')}
+          </h1>
+          <span className="font-mono text-sm tabular-nums text-neutral-600">{total} users</span>
+        </div>
+        {loading ? (
+          <p className="text-neutral-600">{t('common.loading')}</p>
+        ) : (
+          <DataTable
+            columns={columns}
+            rows={users}
+            rowKey={(u) => u.id}
+            emptyMessage={t('admin.users.empty')}
+          />
+        )}
+      </main>
+    </AppShell>
   );
 }

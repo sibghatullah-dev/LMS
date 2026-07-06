@@ -25,7 +25,7 @@
       "submit": "Create account",
       "hasAccount": "Already have an account?",
       "login": "Sign in",
-      "success": "Account created. Check your email to verify your address."
+      "success": "Account created. You can sign in now."
     },
     "verify": {
       "title": "Verify your email",
