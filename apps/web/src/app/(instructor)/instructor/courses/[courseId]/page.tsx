@@ -15,7 +15,7 @@ import {
   Toaster,
 } from '@/components/ui';
 import { useAuthStore } from '@/lib/auth-store';
-import type { Assessment, Course, Module } from '@/lib/course-types';
+import type { Assessment, Course, LiveSession, Module } from '@/lib/course-types';
 
 /** Immutably move item at `from` by `delta` within an array. */
 function move<T>(arr: T[], from: number, delta: number): T[] {
@@ -196,6 +196,8 @@ export default function CourseBuilderPage() {
         )}
 
         <AssessmentPanel courseId={params.courseId} />
+        <LiveSessionPanel courseId={params.courseId} />
+        <AnnouncementPanel courseId={params.courseId} />
       </main>
       <Toaster />
     </AppShell>
@@ -350,6 +352,248 @@ function AssessmentPanel({ courseId }: { courseId: string }) {
           },
         ]}
       />
+    </section>
+  );
+}
+
+function LiveSessionPanel({ courseId }: { courseId: string }) {
+  const authedFetch = useAuthStore((s) => s.authedFetch);
+  const toast = useToast();
+  const [sessions, setSessions] = useState<LiveSession[]>([]);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [scheduledStart, setScheduledStart] = useState('');
+  const [scheduledEnd, setScheduledEnd] = useState('');
+  const [deliveryMode, setDeliveryMode] = useState<'native' | 'zoom' | 'ms_teams'>('zoom');
+  const [joinUrl, setJoinUrl] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setSessions(await authedFetch<LiveSession[]>(`/courses/${courseId}/live-sessions`));
+  }, [authedFetch, courseId]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const schedule = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      await authedFetch(`/courses/${courseId}/live-sessions`, {
+        method: 'POST',
+        body: {
+          title,
+          description,
+          scheduledStart: new Date(scheduledStart).toISOString(),
+          scheduledEnd: new Date(scheduledEnd).toISOString(),
+          deliveryMode,
+          joinUrl: joinUrl.trim() || undefined,
+        },
+      });
+      setTitle('');
+      setDescription('');
+      setScheduledStart('');
+      setScheduledEnd('');
+      setJoinUrl('');
+      toast('Live session scheduled', 'live');
+      await load();
+    } catch (e) {
+      setError((e as { message?: string }).message ?? 'Could not schedule live session.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const setSessionState = async (sessionId: string, action: 'start' | 'end') => {
+    setBusyId(sessionId);
+    setError(null);
+    try {
+      await authedFetch(`/live-sessions/${sessionId}/${action}`, { method: 'POST' });
+      toast(action === 'start' ? 'Session started' : 'Session ended', 'live');
+      await load();
+    } catch (e) {
+      setError((e as { message?: string }).message ?? `Could not ${action} session.`);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  return (
+    <section className="mt-8 grid gap-4">
+      <div>
+        <h2 className="font-display text-xl font-semibold text-ink-900">Live sessions</h2>
+        <p className="text-sm text-neutral-600">Schedule Zoom, MS Teams, or native classroom sessions.</p>
+      </div>
+
+      <div className="grid gap-4 rounded-card border border-neutral-200 bg-surface-0 p-5 lg:grid-cols-[1fr_150px_190px_190px]">
+        <Field label="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <SelectField
+          label="Mode"
+          value={deliveryMode}
+          onChange={(e) => setDeliveryMode(e.target.value as typeof deliveryMode)}
+        >
+          <option value="zoom">Zoom</option>
+          <option value="ms_teams">MS Teams</option>
+          <option value="native">Native</option>
+        </SelectField>
+        <Field
+          label="Starts"
+          type="datetime-local"
+          value={scheduledStart}
+          onChange={(e) => setScheduledStart(e.target.value)}
+        />
+        <Field
+          label="Ends"
+          type="datetime-local"
+          value={scheduledEnd}
+          onChange={(e) => setScheduledEnd(e.target.value)}
+        />
+        <div className="lg:col-span-2">
+          <Field
+            label="Meeting link"
+            type="url"
+            value={joinUrl}
+            onChange={(e) => setJoinUrl(e.target.value)}
+            placeholder={deliveryMode === 'native' ? 'Optional for native' : 'Required for Zoom/MS Teams'}
+          />
+        </div>
+        <div className="lg:col-span-2">
+          <Field
+            label="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Agenda or preparation notes"
+          />
+        </div>
+        <Button
+          className="w-fit"
+          disabled={saving || !title.trim() || !scheduledStart || !scheduledEnd}
+          onClick={schedule}
+        >
+          {saving ? 'Scheduling...' : 'Schedule session'}
+        </Button>
+      </div>
+      {error && <p className="text-sm text-accent-alert">{error}</p>}
+
+      <DataTable
+        rows={sessions}
+        rowKey={(row) => row.id}
+        emptyMessage="No live sessions scheduled."
+        columns={[
+          { key: 'title', header: 'Session', cell: (row) => row.title },
+          {
+            key: 'when',
+            header: 'When',
+            cell: (row) => `${new Date(row.scheduledStart).toLocaleString()} - ${new Date(row.scheduledEnd).toLocaleTimeString()}`,
+          },
+          { key: 'mode', header: 'Mode', cell: (row) => row.deliveryMode.replace('_', ' ') },
+          {
+            key: 'status',
+            header: 'Status',
+            cell: (row) => <StatusChip label={row.status} tone={toneForStatus(row.status)} />,
+          },
+          {
+            key: 'actions',
+            header: '',
+            cell: (row) => (
+              <div className="flex flex-wrap gap-2">
+                {row.joinUrl && (
+                  <a
+                    className="rounded-card border border-neutral-200 px-3 py-1.5 text-sm font-medium text-ink-900"
+                    href={row.joinUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Join
+                  </a>
+                )}
+                {row.status === 'scheduled' && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={busyId === row.id}
+                    onClick={() => void setSessionState(row.id, 'start')}
+                  >
+                    Start
+                  </Button>
+                )}
+                {row.status === 'live' && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={busyId === row.id}
+                    onClick={() => void setSessionState(row.id, 'end')}
+                  >
+                    End
+                  </Button>
+                )}
+                <Link
+                  href={`/instructor/live-sessions/${row.id}/attendance`}
+                  className="rounded-card border border-neutral-200 px-3 py-1.5 text-sm font-medium text-ink-900"
+                >
+                  Attendance
+                </Link>
+              </div>
+            ),
+          },
+        ]}
+      />
+    </section>
+  );
+}
+
+function AnnouncementPanel({ courseId }: { courseId: string }) {
+  const authedFetch = useAuthStore((s) => s.authedFetch);
+  const toast = useToast();
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const send = async () => {
+    setSending(true);
+    setError(null);
+    try {
+      const result = await authedFetch<{ notified: number }>(`/courses/${courseId}/announcements`, {
+        method: 'POST',
+        body: { title, body },
+      });
+      setTitle('');
+      setBody('');
+      toast(`Announcement sent to ${result.notified} learner${result.notified === 1 ? '' : 's'}`, 'live');
+    } catch (e) {
+      setError((e as { message?: string }).message ?? 'Could not send announcement.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <section className="mt-8 grid gap-4 rounded-card border border-neutral-200 bg-surface-0 p-5">
+      <div>
+        <h2 className="font-display text-xl font-semibold text-ink-900">Announcements</h2>
+        <p className="text-sm text-neutral-600">Broadcast a course update to enrolled learners.</p>
+      </div>
+      <Field label="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="announcement-body" className="text-sm font-medium text-ink-900">
+          Message
+        </label>
+        <textarea
+          id="announcement-body"
+          rows={4}
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          className="rounded-card border border-neutral-200 bg-surface-0 p-3 text-base text-ink-900 outline-none"
+        />
+      </div>
+      {error && <p className="text-sm text-accent-alert">{error}</p>}
+      <Button className="w-fit" disabled={sending || !title.trim() || !body.trim()} onClick={send}>
+        {sending ? 'Sending...' : 'Send announcement'}
+      </Button>
     </section>
   );
 }

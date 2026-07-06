@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { AssessmentModel } from '../models/assessment.model';
+import { AttendanceModel } from '../models/attendance.model';
 import { CourseModel } from '../models/course.model';
 import { EnrollmentModel } from '../models/enrollment.model';
 import { LessonProgressModel } from '../models/lesson-progress.model';
@@ -26,7 +27,7 @@ async function loadCourseForStaff(ctx: AuthContext, courseId: string) {
 export async function getCourseReportSummary(ctx: AuthContext, courseId: string) {
   await loadCourseForStaff(ctx, courseId);
 
-  const [enrollmentCount, activeCount, completedCount, pendingGradingCount, graded] =
+  const [enrollmentCount, activeCount, completedCount, pendingGradingCount, graded, attendance] =
     await Promise.all([
       EnrollmentModel.countDocuments({ courseId }),
       EnrollmentModel.countDocuments({ courseId, status: 'active' }),
@@ -35,6 +36,16 @@ export async function getCourseReportSummary(ctx: AuthContext, courseId: string)
       SubmissionModel.find({ courseId, status: { $in: ['graded', 'auto_graded'] } }).select(
         'totalScorePercent',
       ),
+      AttendanceModel.aggregate<{ _id: null; total: number; present: number }>([
+        { $match: { courseId: new Types.ObjectId(courseId) } },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: 1 },
+            present: { $sum: { $cond: ['$present', 1, 0] } },
+          },
+        },
+      ]),
     ]);
 
   const gradeValues = graded
@@ -45,6 +56,11 @@ export async function getCourseReportSummary(ctx: AuthContext, courseId: string)
       ? 0
       : Math.round((gradeValues.reduce((sum, value) => sum + value, 0) / gradeValues.length) * 100) /
         100;
+  const attendanceRow = attendance[0];
+  const averageAttendancePercent =
+    !attendanceRow || attendanceRow.total === 0
+      ? 0
+      : Math.round((attendanceRow.present / attendanceRow.total) * 10_000) / 100;
 
   return {
     courseId,
@@ -52,25 +68,40 @@ export async function getCourseReportSummary(ctx: AuthContext, courseId: string)
     activeCount,
     completedCount,
     averageGradePercent,
-    averageAttendancePercent: 0,
+    averageAttendancePercent,
     pendingGradingCount,
   };
 }
 
 export async function getInstitutionReportSummary(ctx: AuthContext) {
-  const [totalUsers, totalCourses, pendingCourseApprovals, activeEnrollments] = await Promise.all([
+  const [totalUsers, totalCourses, pendingCourseApprovals, activeEnrollments, attendance] = await Promise.all([
     UserModel.countDocuments({ institutionId: ctx.institutionId }),
     CourseModel.countDocuments({ institutionId: ctx.institutionId }),
     CourseModel.countDocuments({ institutionId: ctx.institutionId, status: 'pending_review' }),
     EnrollmentModel.countDocuments({ institutionId: ctx.institutionId, status: 'active' }),
+    AttendanceModel.aggregate<{ _id: null; total: number; present: number }>([
+      { $match: { institutionId: new Types.ObjectId(ctx.institutionId) } },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          present: { $sum: { $cond: ['$present', 1, 0] } },
+        },
+      },
+    ]),
   ]);
+  const attendanceRow = attendance[0];
+  const averagePlatformAttendancePercent =
+    !attendanceRow || attendanceRow.total === 0
+      ? 0
+      : Math.round((attendanceRow.present / attendanceRow.total) * 10_000) / 100;
 
   return {
     totalUsers,
     totalCourses,
     pendingCourseApprovals,
     activeEnrollments,
-    averagePlatformAttendancePercent: 0,
+    averagePlatformAttendancePercent,
   };
 }
 

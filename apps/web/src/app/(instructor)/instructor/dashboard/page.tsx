@@ -55,7 +55,7 @@ export default function InstructorDashboardPage() {
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="font-display text-2xl font-semibold text-ink-900">Instructor Dashboard</h1>
-            <p className="text-sm text-neutral-600">Enrollment, grades, and grading workload.</p>
+            <p className="text-sm text-neutral-600">Enrollment, grades, attendance, and grading workload.</p>
           </div>
           <Link
             href="/instructor/courses"
@@ -103,6 +103,12 @@ export default function InstructorDashboardPage() {
                     header: 'Avg grade',
                     numeric: true,
                     cell: (row) => `${row.summary.averageGradePercent}%`,
+                  },
+                  {
+                    key: 'attendance',
+                    header: 'Attendance',
+                    numeric: true,
+                    cell: (row) => `${row.summary.averageAttendancePercent}%`,
                   },
                   {
                     key: 'pending',

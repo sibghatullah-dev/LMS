@@ -95,6 +95,39 @@ export interface Submission {
   gradedAt: string | null;
 }
 
+export interface LiveSession {
+  id: string;
+  courseId: string;
+  instructorId: string;
+  title: string;
+  description: string;
+  scheduledStart: string;
+  scheduledEnd: string;
+  deliveryMode: 'native' | 'zoom' | 'ms_teams';
+  status: 'scheduled' | 'live' | 'ended' | 'cancelled';
+  joinUrl?: string;
+  providerMeetingId?: string;
+  providerRecordingUrl?: string;
+  recordingStorageKey?: string;
+  startedAt?: string;
+  endedAt?: string;
+}
+
+export interface AttendanceRecord {
+  id: string;
+  courseId: string;
+  liveSessionId: string;
+  studentId: string;
+  studentName?: string;
+  studentEmail?: string;
+  joinedAt?: string;
+  leftAt?: string;
+  durationSeconds: number;
+  present: boolean;
+  source: 'native' | 'provider' | 'manual';
+  overrideReason?: string;
+}
+
 export const STATUS_TONE: Record<string, 'neutral' | 'progress' | 'live' | 'alert'> = {
   draft: 'neutral',
   pending_review: 'progress',

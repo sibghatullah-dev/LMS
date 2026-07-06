@@ -2,6 +2,7 @@ import { Queue, Worker } from 'bullmq';
 import { loadEnv, QUEUE_NAMES } from '@lumora/config';
 import {
   connectToDatabase,
+  createDueLiveSessionReminders,
   getPendingEmailNotifications,
   markNotificationEmailFailed,
   markNotificationEmailSent,
@@ -29,7 +30,8 @@ function redisConnectionOptions(redisUrl: string) {
   };
 }
 
-async function dispatchPendingNotificationEmails(limit = 25): Promise<number> {
+async function dispatchPendingNotificationEmails(limit = 25): Promise<{ reminders: number; sent: number }> {
+  const reminders = await createDueLiveSessionReminders();
   const pending = await getPendingEmailNotifications(limit);
   let sent = 0;
 
@@ -51,7 +53,7 @@ async function dispatchPendingNotificationEmails(limit = 25): Promise<number> {
     }
   }
 
-  return sent;
+  return { reminders: reminders.created, sent };
 }
 
 function escapeHtml(value: string): string {
@@ -68,15 +70,12 @@ async function main(): Promise<void> {
   await connectToDatabase();
 
   const connection = redisConnectionOptions(env.REDIS_URL);
-  const queue = new Queue<NotificationEmailJob, { sent: number }, string>(QUEUE_NAMES.notifications, {
+  const queue = new Queue<NotificationEmailJob, { reminders: number; sent: number }, string>(QUEUE_NAMES.notifications, {
     connection,
   });
-  const worker = new Worker<NotificationEmailJob, { sent: number }, string>(
+  const worker = new Worker<NotificationEmailJob, { reminders: number; sent: number }, string>(
     QUEUE_NAMES.notifications,
-    async () => {
-      const count = await dispatchPendingNotificationEmails();
-      return { sent: count };
-    },
+    async () => dispatchPendingNotificationEmails(),
     { connection },
   );
 
@@ -90,9 +89,9 @@ async function main(): Promise<void> {
     { repeat: { every: 60_000 }, removeOnComplete: 100, removeOnFail: 100 },
   );
 
-  const sentAtBoot = await dispatchPendingNotificationEmails();
+  const bootResult = await dispatchPendingNotificationEmails();
   console.log(
-    `[lumora-worker] boot ok (env=${env.NODE_ENV}); notification queue active; sentAtBoot=${sentAtBoot}`,
+    `[lumora-worker] boot ok (env=${env.NODE_ENV}); notification queue active; remindersAtBoot=${bootResult.reminders}; sentAtBoot=${bootResult.sent}`,
   );
 
   const shutdown = async () => {

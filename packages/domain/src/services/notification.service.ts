@@ -2,10 +2,11 @@ import mongoose from 'mongoose';
 import { NotificationModel } from '../models/notification.model';
 import { CourseModel } from '../models/course.model';
 import { EnrollmentModel } from '../models/enrollment.model';
+import { LiveSessionModel } from '../models/live-session.model';
 import { UserModel } from '../models/user.model';
 import { ForbiddenError, NotFoundError } from '../errors';
 import { hasAnyRole, type AuthContext } from '../rbac/roles';
-import type { NotificationType } from '@lumora/config';
+import { SESSION_REMINDER_LEADS_MIN, type NotificationType } from '@lumora/config';
 import type {
   CreateAnnouncementInput,
   ListNotificationsInput,
@@ -154,6 +155,74 @@ export async function createCourseAnnouncement(ctx: AuthContext, input: CreateAn
   if (docs.length > 0) await NotificationModel.insertMany(docs, { ordered: false });
 
   return { notified: docs.length };
+}
+
+export async function createDueLiveSessionReminders(now = new Date()): Promise<{ created: number }> {
+  const maxLeadMs = Math.max(...SESSION_REMINDER_LEADS_MIN) * 60_000;
+  const sessions = await LiveSessionModel.find({
+    status: 'scheduled',
+    scheduledStart: { $gt: now, $lte: new Date(now.getTime() + maxLeadMs) },
+  }).select('institutionId courseId title scheduledStart deliveryMode');
+
+  let created = 0;
+  for (const session of sessions) {
+    const dueLeads = SESSION_REMINDER_LEADS_MIN.filter((leadMin) => {
+      const reminderAt = session.scheduledStart.getTime() - leadMin * 60_000;
+      return reminderAt <= now.getTime();
+    });
+    if (dueLeads.length === 0) continue;
+
+    const enrollments = await EnrollmentModel.find({
+      institutionId: session.institutionId,
+      courseId: session.courseId,
+      status: { $in: ['active', 'completed'] },
+    }).select('studentId');
+    if (enrollments.length === 0) continue;
+
+    const studentIds = enrollments.map((enrollment) => enrollment.studentId);
+    const users = await UserModel.find({ _id: { $in: studentIds } }).select('notificationPreferences');
+    const prefsById = new Map(users.map((user) => [String(user._id), user.notificationPreferences]));
+
+    const writes = dueLeads.flatMap((leadMin) =>
+      studentIds.map((studentId) => {
+        const prefs = prefsById.get(String(studentId));
+        const leadLabel = leadMin >= 60 ? `${Math.round(leadMin / 60)} hour` : `${leadMin} minute`;
+        const plural = leadMin >= 60 && Math.round(leadMin / 60) !== 1 ? 's' : leadMin === 1 ? '' : 's';
+        const channels = {
+          inApp: ((prefs?.inApp ?? true) ? 'sent' : 'skipped') as 'sent' | 'skipped',
+          email: ((prefs?.email ?? true) ? 'pending' : 'skipped') as 'pending' | 'skipped',
+        };
+        return {
+          updateOne: {
+            filter: {
+              dedupeKey: `live-session:${String(session._id)}:${leadMin}:${String(studentId)}`,
+            },
+            update: {
+              $setOnInsert: {
+                institutionId: session.institutionId,
+                userId: studentId,
+                type: 'live_session_reminder' as const,
+                title: `Live session starts in ${leadLabel}${plural}`,
+                body: `${session.title} starts at ${session.scheduledStart.toLocaleString()}.`,
+                actionUrl: `/live/${String(session.courseId)}`,
+                dedupeKey: `live-session:${String(session._id)}:${leadMin}:${String(studentId)}`,
+                relatedEntity: { type: 'live_session', id: session._id },
+                channels,
+              },
+            },
+            upsert: true,
+          },
+        };
+      }),
+    );
+
+    if (writes.length > 0) {
+      const result = await NotificationModel.bulkWrite(writes, { ordered: false });
+      created += result.upsertedCount;
+    }
+  }
+
+  return { created };
 }
 
 export async function getPendingEmailNotifications(limit = 25) {

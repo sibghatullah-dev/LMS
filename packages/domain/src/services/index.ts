@@ -23,3 +23,4 @@ export * from './report.service';
 export * from './notification.service';
 export * from './certificate.service';
 export * from './privacy.service';
+export * from './live-session.service';

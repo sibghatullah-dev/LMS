@@ -117,6 +117,12 @@ export default function LearnPage() {
             >
               Grades
             </Link>
+            <Link
+              href={`/live/${params.courseId}`}
+              className="rounded-card border border-neutral-200 bg-surface-0 px-3 py-2 text-sm font-medium text-ink-900 hover:bg-paper-50"
+            >
+              Live
+            </Link>
             <ProgressRing total={player.modules.length || 1} completed={completedModules} size="md" />
             <span className="font-mono text-sm tabular-nums text-neutral-600">
               {player.progress.percent}% complete

@@ -53,11 +53,12 @@ export default function AdminDashboardPage() {
           <p className="text-neutral-600">Loading…</p>
         ) : (
           <div className="grid gap-6">
-            <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
               <Metric label="Users" value={data.summary.totalUsers} />
               <Metric label="Courses" value={data.summary.totalCourses} />
               <Metric label="Pending approvals" value={data.summary.pendingCourseApprovals} />
               <Metric label="Active enrollments" value={data.summary.activeEnrollments} />
+              <Metric label="Attendance" value={`${data.summary.averagePlatformAttendancePercent}%`} />
             </section>
 
             <section className="grid gap-6 lg:grid-cols-2">
@@ -111,7 +112,7 @@ export default function AdminDashboardPage() {
   );
 }
 
-function Metric({ label, value }: { label: string; value: number }) {
+function Metric({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="rounded-card border border-neutral-200 bg-surface-0 p-5">
       <p className="text-caption uppercase tracking-[0.02em] text-neutral-600">{label}</p>

@@ -6,3 +6,4 @@ export * from './content.schema';
 export * from './assessment.schema';
 export * from './notification.schema';
 export * from './privacy.schema';
+export * from './live-session.schema';

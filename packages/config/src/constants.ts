@@ -99,11 +99,22 @@ export const NOTIFICATION_TYPES = [
   'course_review',
   'announcement',
   'deadline_reminder',
+  'live_session_reminder',
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
 export const NOTIFICATION_CHANNEL_STATUSES = ['pending', 'sent', 'failed', 'skipped'] as const;
 export type NotificationChannelStatus = (typeof NOTIFICATION_CHANNEL_STATUSES)[number];
+
+/** Live classroom scheduling (FR-LIVE). */
+export const LIVE_SESSION_DELIVERY_MODES = ['native', 'zoom', 'ms_teams'] as const;
+export type LiveSessionDeliveryMode = (typeof LIVE_SESSION_DELIVERY_MODES)[number];
+
+export const LIVE_SESSION_STATUSES = ['scheduled', 'live', 'ended', 'cancelled'] as const;
+export type LiveSessionStatus = (typeof LIVE_SESSION_STATUSES)[number];
+
+export const ATTENDANCE_SOURCES = ['native', 'provider', 'manual'] as const;
+export type AttendanceSource = (typeof ATTENDANCE_SOURCES)[number];
 
 /** Enrollment lifecycle status (DDD §3.4, FR-ENROLL). */
 export const ENROLLMENT_STATUSES = [

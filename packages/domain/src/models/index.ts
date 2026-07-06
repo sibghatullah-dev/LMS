@@ -25,4 +25,6 @@ export {
 export { NotificationModel, type Notification } from './notification.model';
 export { CertificateModel, type Certificate } from './certificate.model';
 export { AuditLogModel, type AuditLog } from './audit-log.model';
+export { LiveSessionModel, type LiveSession } from './live-session.model';
+export { AttendanceModel, type Attendance } from './attendance.model';
 export { applyJsonSchemaValidators } from './validators';
