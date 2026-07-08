@@ -1,50 +1,43 @@
 import type { Config } from 'tailwindcss';
 
-/**
- * Design system tokens (UI/UX Design Specification §2).
- * Colors §2.2, typography §2.3, spacing/radius §2.4.
- */
 const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        ink: { 900: '#14213D' },
-        paper: { 50: '#F7F8FA' },
+        ink: { 900: '#0F172A', 800: '#1E293B', 700: '#334155' },
+        paper: { 50: '#F8FAFC', 100: '#F1F5F9' },
         surface: { 0: '#FFFFFF' },
-        // Semantic accents — used deliberately per §2.2
-        'accent-progress': '#FFB238', // marigold: progress, badges, points
-        'accent-live': '#17B890', // teal: live/success/active
-        'accent-alert': '#E85D4E', // coral: overdue/destructive/errors
-        neutral: { 200: '#E5E7EB', 600: '#6B7280' },
+        'surface-soft': '#EEF4FF',
+        'accent-progress': '#D97706',
+        'accent-live': '#059669',
+        'accent-alert': '#DC2626',
+        neutral: { 100: '#F1F5F9', 200: '#E2E8F0', 300: '#CBD5E1', 500: '#64748B', 600: '#475569' },
         'focus-ring': '#3B82F6',
       },
       fontFamily: {
-        display: ['var(--font-space-grotesk)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        mono: ['var(--font-plex-mono)', 'ui-monospace', 'monospace'],
+        mono: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        // Type scale (base 16) §2.3: 12 / 14 / 16 / 20 / 24 / 32 / 40
         caption: ['0.75rem', { lineHeight: '1rem', letterSpacing: '0.02em' }],
-        sm: ['0.875rem', { lineHeight: '1.25rem' }],
-        base: ['1rem', { lineHeight: '1.5rem' }],
-        lg: ['1.25rem', { lineHeight: '1.75rem' }],
-        xl: ['1.5rem', { lineHeight: '2rem' }],
-        '2xl': ['2rem', { lineHeight: '2.5rem' }],
-        '3xl': ['2.5rem', { lineHeight: '3rem' }],
+        sm: ['0.8125rem', { lineHeight: '1.125rem' }],
+        base: ['0.875rem', { lineHeight: '1.25rem' }],
+        lg: ['1rem', { lineHeight: '1.5rem' }],
+        xl: ['1.25rem', { lineHeight: '1.75rem' }],
+        '2xl': ['1.5rem', { lineHeight: '2rem' }],
+        '3xl': ['1.875rem', { lineHeight: '2.375rem' }],
       },
       borderRadius: {
-        // §2.4: 12px card radius (soft, not pill)
-        card: '12px',
+        card: '8px',
       },
       spacing: {
-        // §2.4: sidebar 260px desktop / 72px icon rail
-        sidebar: '260px',
-        rail: '72px',
+        sidebar: '240px',
+        rail: '64px',
       },
       maxWidth: {
-        content: '1280px',
+        content: '1440px',
       },
       keyframes: {
         'ring-fill': {

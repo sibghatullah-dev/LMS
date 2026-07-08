@@ -52,7 +52,7 @@ function ToastItem({ toast }: { toast: Toast }) {
   return (
     <div
       className={cn(
-        'pointer-events-auto flex items-center justify-between gap-3 rounded-card border px-4 py-3 text-sm shadow-sm',
+        'pointer-events-auto flex items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm shadow-sm',
         TONE_CLASSES[toast.tone],
       )}
     >

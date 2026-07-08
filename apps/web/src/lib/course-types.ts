@@ -109,6 +109,8 @@ export interface LiveSession {
   providerMeetingId?: string;
   providerRecordingUrl?: string;
   recordingStorageKey?: string;
+  recordingStatus?: 'not_available' | 'processing' | 'available' | 'failed';
+  recordingError?: string;
   startedAt?: string;
   endedAt?: string;
 }
@@ -126,6 +128,46 @@ export interface AttendanceRecord {
   present: boolean;
   source: 'native' | 'provider' | 'manual';
   overrideReason?: string;
+}
+
+export interface LivePoll {
+  id: string;
+  liveSessionId: string;
+  question: string;
+  options: string[];
+  counts: number[];
+  responseCount: number;
+  closedAt?: string;
+  createdAt?: string;
+}
+
+export interface LiveChatMessage {
+  id: string;
+  liveSessionId: string;
+  senderId: string;
+  senderName?: string;
+  senderRole?: string;
+  body: string;
+  createdAt?: string;
+}
+
+export interface LiveWhiteboardEvent {
+  id: string;
+  liveSessionId: string;
+  kind: 'stroke' | 'clear';
+  color?: string;
+  width?: number;
+  points: { x: number; y: number }[];
+  createdBy: string;
+  createdAt?: string;
+}
+
+export interface LiveBreakoutRoom {
+  id: string;
+  liveSessionId: string;
+  name: string;
+  participantIds: string[];
+  recalledAt?: string;
 }
 
 export const STATUS_TONE: Record<string, 'neutral' | 'progress' | 'live' | 'alert'> = {

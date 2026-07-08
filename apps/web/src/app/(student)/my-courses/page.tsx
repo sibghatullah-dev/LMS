@@ -38,12 +38,25 @@ export default function MyCoursesPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-content px-6 py-10">
-        <h1 className="mb-6 font-display text-2xl font-semibold text-ink-900">My Courses</h1>
+      <main className="mx-auto max-w-content px-4 py-6 sm:px-6">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-caption font-semibold uppercase text-neutral-500">Enrollment workspace</p>
+            <h1 className="text-2xl font-semibold text-ink-900">My Courses</h1>
+            <p className="text-sm text-neutral-600">Open active courses, track pending requests, or withdraw.</p>
+          </div>
+          <Link href="/catalog" className="rounded-md bg-ink-900 px-4 py-2 text-sm font-semibold text-white">
+            Browse catalog
+          </Link>
+        </div>
         {loading ? (
-          <p className="text-neutral-600">Loading…</p>
+          <div className="grid gap-3">
+            {[0, 1, 2].map((item) => (
+              <div key={item} className="h-20 animate-pulse rounded-lg border border-neutral-200 bg-surface-0" />
+            ))}
+          </div>
         ) : enrollments.length === 0 ? (
-          <p className="text-neutral-600">
+          <p className="rounded-lg border border-neutral-200 bg-surface-0 p-5 text-neutral-600">
             You are not enrolled in any courses yet. Browse the catalog to get started.
           </p>
         ) : (
@@ -51,22 +64,22 @@ export default function MyCoursesPage() {
             {enrollments.map((e) => (
               <li
                 key={e.id}
-                className="flex items-center justify-between rounded-card border border-neutral-200 bg-surface-0 p-4"
+                className="grid gap-3 rounded-lg border border-neutral-200 bg-surface-0 p-4 md:grid-cols-[1fr_auto] md:items-center"
               >
                 <div>
-                  <p className="font-display text-lg font-semibold text-ink-900">
+                  <p className="text-lg font-semibold text-ink-900">
                     {e.course?.title ?? 'Course'}
                   </p>
-                  <p className="font-mono text-caption tabular-nums text-neutral-600">
+                  <p className="text-caption font-semibold uppercase text-neutral-500">
                     {e.course?.moduleCount ?? 0} modules · {e.course?.lessonCount ?? 0} lessons
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2 md:justify-end">
                   <StatusChip label={e.status.replace('_', ' ')} tone={toneForStatus(e.status)} />
                   {(e.status === 'active' || e.status === 'completed') && e.course && (
                     <Link
                       href={`/learn/${e.course.id}`}
-                      className="rounded-card bg-ink-900 px-3 py-1.5 text-sm font-medium text-surface-0"
+                      className="rounded-md bg-ink-900 px-3 py-2 text-sm font-semibold text-surface-0"
                     >
                       Open
                     </Link>

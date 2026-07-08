@@ -12,9 +12,9 @@ import { cn } from '@/lib/cn';
 export type StatusTone = 'neutral' | 'progress' | 'live' | 'alert';
 
 const TONE_CLASSES: Record<StatusTone, string> = {
-  neutral: 'bg-neutral-200 text-ink-900',
-  progress: 'bg-accent-progress/20 text-ink-900',
-  live: 'bg-accent-live/15 text-ink-900',
+  neutral: 'bg-neutral-100 text-neutral-600 ring-1 ring-inset ring-neutral-200',
+  progress: 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200',
+  live: 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200',
   alert: 'bg-accent-alert/15 text-accent-alert',
 };
 
@@ -50,7 +50,7 @@ export function StatusChip({ label, tone = 'neutral', className }: StatusChipPro
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded px-2 py-0.5 text-caption font-medium uppercase tracking-[0.02em]',
+        'inline-flex items-center rounded px-2 py-0.5 text-caption font-semibold uppercase',
         TONE_CLASSES[tone],
         className,
       )}

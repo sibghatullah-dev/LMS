@@ -63,25 +63,26 @@ export default function CourseGradesPage() {
   if (!data) {
     return (
       <AppShell allow={['student', 'instructor', 'admin', 'super_admin', 'alumnus']}>
-        <main className="mx-auto max-w-content px-6 py-10 text-neutral-600">Loading…</main>
+        <main className="mx-auto max-w-content px-4 py-6 text-neutral-600 sm:px-6">Loading...</main>
       </AppShell>
     );
   }
 
   return (
     <AppShell allow={['student', 'instructor', 'admin', 'super_admin', 'alumnus']}>
-      <main className="mx-auto max-w-content px-6 py-8">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <main className="mx-auto max-w-content px-4 py-6 sm:px-6">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <Link href={`/learn/${params.courseId}`} className="text-sm text-neutral-600">
+            <Link href={`/learn/${params.courseId}`} className="text-sm font-semibold text-neutral-600">
               Back to course
             </Link>
-            <h1 className="font-display text-2xl font-semibold text-ink-900">Assignments & grades</h1>
+            <p className="mt-2 text-caption font-semibold uppercase text-neutral-500">Assessment record</p>
+            <h1 className="text-2xl font-semibold text-ink-900">Assignments & grades</h1>
             <p className="text-sm text-neutral-600">{data.course.title}</p>
           </div>
-          <div className="rounded-card border border-neutral-200 bg-surface-0 px-4 py-3 text-right">
-            <p className="text-caption uppercase tracking-[0.02em] text-neutral-600">Current standing</p>
-            <p className="font-mono text-2xl font-semibold tabular-nums text-ink-900">
+          <div className="rounded-lg border border-neutral-200 bg-surface-0 px-4 py-3 text-right">
+            <p className="text-caption font-semibold uppercase text-neutral-500">Current standing</p>
+            <p className="text-2xl font-semibold tabular-nums text-ink-900">
               {data.finalGradePercent == null ? '—' : `${data.finalGradePercent}%`}
             </p>
           </div>
@@ -91,16 +92,16 @@ export default function CourseGradesPage() {
 
         <div className="grid gap-4">
           {data.assessments.length === 0 && (
-            <p className="rounded-card border border-neutral-200 bg-surface-0 p-6 text-neutral-600">
+            <p className="rounded-lg border border-neutral-200 bg-surface-0 p-6 text-neutral-600">
               No assessments are available yet.
             </p>
           )}
           {data.assessments.map((assessment) => (
-            <section key={assessment.id} className="rounded-card border border-neutral-200 bg-surface-0 p-5">
+            <section key={assessment.id} className="rounded-lg border border-neutral-200 bg-surface-0 p-5">
               <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="mb-1 flex items-center gap-2">
-                    <h2 className="font-display text-lg font-semibold text-ink-900">{assessment.title}</h2>
+                    <h2 className="text-lg font-semibold text-ink-900">{assessment.title}</h2>
                     <StatusChip
                       label={assessment.submission?.status ?? 'not submitted'}
                       tone={toneForStatus(assessment.submission?.status ?? 'draft')}
@@ -112,7 +113,7 @@ export default function CourseGradesPage() {
                     {assessment.dueAt ? ` · Due ${new Date(assessment.dueAt).toLocaleString()}` : ''}
                   </p>
                 </div>
-                <p className="font-mono text-sm tabular-nums text-neutral-600">
+                <p className="text-sm font-semibold tabular-nums text-neutral-600">
                   {assessment.submission?.totalScore == null
                     ? 'Ungraded'
                     : `${assessment.submission.totalScore}/${assessment.maxScore} (${assessment.submission.totalScorePercent}%)`}
@@ -127,7 +128,7 @@ export default function CourseGradesPage() {
                 <div className="grid gap-2 text-sm">
                   {assessment.submission.instructorComment && (
                     <p>
-                      <span className="font-medium text-ink-900">Feedback:</span>{' '}
+                      <span className="font-semibold text-ink-900">Feedback:</span>{' '}
                       {assessment.submission.instructorComment}
                     </p>
                   )}
@@ -181,7 +182,7 @@ function SubmitAssignment({
         rows={5}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-card border border-neutral-200 bg-surface-0 p-3 text-base text-ink-900 outline-none"
+        className="rounded-lg border border-neutral-200 bg-surface-0 p-3 text-sm text-ink-900 outline-none"
       />
       <Button className="justify-self-start" disabled={!value.trim()} onClick={onSubmit}>
         Submit assignment
@@ -208,13 +209,13 @@ function SubmitQuiz({
         const key = `${assessment.id}:${questionId}`;
         return (
           <div key={questionId} className="grid gap-2">
-            <p className="font-medium text-ink-900">{question.prompt}</p>
+            <p className="font-semibold text-ink-900">{question.prompt}</p>
             {question.options.length > 0 ? (
               <select
                 aria-label={question.prompt}
                 value={responses[key] ?? ''}
                 onChange={(e) => setResponses({ ...responses, [key]: e.target.value })}
-                className="h-10 rounded-card border border-neutral-200 bg-surface-0 px-3 text-base text-ink-900"
+                className="h-10 rounded-lg border border-neutral-200 bg-surface-0 px-3 text-sm text-ink-900"
               >
                 <option value="">Select an answer</option>
                 {question.options.map((option) => (
@@ -229,7 +230,7 @@ function SubmitQuiz({
                 rows={4}
                 value={responses[key] ?? ''}
                 onChange={(e) => setResponses({ ...responses, [key]: e.target.value })}
-                className="rounded-card border border-neutral-200 bg-surface-0 p-3 text-base text-ink-900 outline-none"
+                className="rounded-lg border border-neutral-200 bg-surface-0 p-3 text-sm text-ink-900 outline-none"
               />
             )}
           </div>

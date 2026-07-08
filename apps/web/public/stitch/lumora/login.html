@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumora | Sign In</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        
+        /* Subtle texture for the surface-container background */
+        .subtle-grid {
+            background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+            background-size: 32px 32px;
+            opacity: 0.2;
+        }
+
+        .focus-ring:focus {
+            outline: none;
+            border-color: #0f172a;
+            box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#ffffff",
+                      "outline": "#76777d",
+                      "on-surface": "#0d1c2d",
+                      "surface-container-high": "#dbe9ff",
+                      "on-tertiary-container": "#808488",
+                      "on-primary": "#ffffff",
+                      "surface-container-low": "#eef4ff",
+                      "on-surface-variant": "#45464d",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "inverse-primary": "#bec6e0",
+                      "primary-fixed": "#dae2fd",
+                      "secondary-container": "#d0e1fb",
+                      "surface-bright": "#f8f9ff",
+                      "outline-variant": "#c6c6cd",
+                      "background": "#f8f9ff",
+                      "tertiary-fixed-dim": "#c3c7cb",
+                      "surface-container": "#e5efff",
+                      "surface-dim": "#ccdbf2",
+                      "secondary": "#505f76",
+                      "on-secondary-container": "#54647a",
+                      "on-background": "#0d1c2d",
+                      "surface-tint": "#565e74",
+                      "inverse-on-surface": "#e9f1ff",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "surface": "#f8f9ff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed": "#dfe3e7",
+                      "primary-container": "#131b2e",
+                      "primary": "#000000",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "primary-fixed-dim": "#bec6e0",
+                      "on-error-container": "#93000a",
+                      "on-primary-container": "#7c839b",
+                      "error-container": "#ffdad6",
+                      "surface-variant": "#d4e4fa",
+                      "inverse-surface": "#233143",
+                      "tertiary": "#000000",
+                      "on-secondary-fixed": "#0b1c30",
+                      "on-tertiary-fixed": "#171c1f",
+                      "surface-container-highest": "#d4e4fa",
+                      "on-primary-fixed": "#131b2e",
+                      "on-tertiary-fixed-variant": "#43474b",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-container": "#171c1f",
+                      "secondary-fixed": "#d3e4fe"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sidebar-width": "240px",
+                      "lg": "24px",
+                      "sidebar-collapsed": "64px",
+                      "md": "16px",
+                      "container-max": "1440px",
+                      "xl": "32px",
+                      "sm": "8px",
+                      "xs": "4px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "display": ["Inter"],
+                      "h2": ["Inter"],
+                      "h1": ["Inter"],
+                      "h3": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                      "display": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface-bright text-on-surface font-body-md min-h-screen flex items-center justify-center overflow-hidden selection:bg-surface-variant selection:text-primary">
+<!-- Ambient background layer -->
+<div class="fixed inset-0 pointer-events-none z-0">
+<div class="absolute inset-0 subtle-grid"></div>
+<!-- Very subtle decorative shader for atmospheric quality -->
+
+</div>
+<!-- Main Container -->
+<main class="relative z-10 w-full max-w-[440px] px-lg">
+<!-- Brand Header (Public view, no TopAppBar) -->
+<header class="flex flex-col items-center mb-xl text-center">
+<div class="mb-md">
+<!-- Placeholder for Brand Identity -->
+<div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[32px]">school</span>
+</div>
+</div>
+<h1 class="font-h1 text-h1 text-on-surface mb-xs">Lumora</h1>
+<p class="font-body-md text-body-md text-secondary">Unified Learning Management System</p>
+</header>
+<!-- Login Form Card -->
+<section class="bg-white border border-outline-variant rounded-lg p-xl transition-all duration-300">
+<form class="space-y-lg" id="loginForm">
+<!-- Institution Slug -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant block uppercase tracking-wider" for="institution">Institution Slug</label>
+<div class="relative group">
+<span class="absolute left-sm top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px] group-focus-within:text-primary transition-colors">domain</span>
+<input class="w-full pl-[40px] pr-md py-[10px] bg-surface-bright border border-outline-variant rounded-lg font-body-md focus-ring transition-all placeholder:text-outline-variant" id="institution" name="institution" placeholder="e.g. acme-university" required="" type="text"/>
+</div>
+</div>
+<!-- Email Address -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant block uppercase tracking-wider" for="email">Email Address</label>
+<div class="relative group">
+<span class="absolute left-sm top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px] group-focus-within:text-primary transition-colors">alternate_email</span>
+<input class="w-full pl-[40px] pr-md py-[10px] bg-surface-bright border border-outline-variant rounded-lg font-body-md focus-ring transition-all placeholder:text-outline-variant" id="email" name="email" placeholder="name@institution.edu" required="" type="email"/>
+</div>
+</div>
+<!-- Password -->
+<div class="space-y-xs">
+<div class="flex justify-between items-center">
+<label class="font-label-md text-label-md text-on-surface-variant block uppercase tracking-wider" for="password">Password</label>
+</div>
+<div class="relative group">
+<span class="absolute left-sm top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px] group-focus-within:text-primary transition-colors">lock</span>
+<input class="w-full pl-[40px] pr-md py-[10px] bg-surface-bright border border-outline-variant rounded-lg font-body-md focus-ring transition-all placeholder:text-outline-variant" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-sm top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors" id="togglePassword" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full h-11 bg-primary text-on-primary font-label-md text-label-md uppercase tracking-widest rounded-lg hover:bg-on-surface transition-colors duration-200 active:scale-[0.98] shadow-sm flex items-center justify-center gap-sm" type="submit">
+                    Sign In
+                    <span class="material-symbols-outlined text-[18px]">login</span>
+</button>
+</form>
+<!-- Secondary Links -->
+<div class="mt-xl pt-lg border-t border-outline-variant flex flex-col items-center gap-md">
+<div class="flex gap-lg">
+<a class="font-label-md text-label-md text-secondary hover:text-on-surface transition-colors flex items-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[16px]">help_outline</span>
+                        Forgot password
+                    </a>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    Need an account? 
+                    <a class="font-label-md text-label-md text-primary font-bold hover:underline ml-xs" href="#">Register</a>
+</p>
+</div>
+</section>
+<!-- Footer Footer -->
+<footer class="mt-xl text-center">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-tighter">
+                © 2024 Lumora LMS. All rights reserved.
+            </p>
+</footer>
+</main>
+<script>
+        // Password visibility toggle interaction
+        const toggleBtn = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        toggleBtn.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            toggleBtn.querySelector('span').textContent = isPassword ? 'visibility_off' : 'visibility';
+        });
+
+        // Form submission micro-interaction
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = loginForm.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            
+            // Loading state simulation
+            btn.disabled = true;
+            btn.innerHTML = `<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>`;
+            
+            setTimeout(() => {
+                btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">check_circle</span>`;
+                btn.classList.replace('bg-primary', 'bg-green-600');
+                
+                // Final destination logic would go here
+                console.log("Authentication initiated for Institution: " + document.getElementById('institution').value);
+            }, 1200);
+        });
+
+        // Smooth entry animation for the form
+        window.addEventListener('DOMContentLoaded', () => {
+            const main = document.querySelector('main');
+            main.style.opacity = '0';
+            main.style.transform = 'translateY(10px)';
+            main.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            
+            requestAnimationFrame(() => {
+                main.style.opacity = '1';
+                main.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+<script src="/stitch/lumora/bridge.js"></script>
+</body></html>

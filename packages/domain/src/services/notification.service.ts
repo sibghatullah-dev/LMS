@@ -11,6 +11,7 @@ import type {
   CreateAnnouncementInput,
   ListNotificationsInput,
 } from '../schemas/notification.schema';
+import { publishRealtimeEvent } from './realtime.service';
 
 const { Types } = mongoose;
 
@@ -34,7 +35,7 @@ export async function notifyUser(input: NotifyUserInput) {
   const inAppEnabled = user.notificationPreferences?.inApp ?? true;
   const emailEnabled = user.notificationPreferences?.email ?? true;
 
-  return NotificationModel.create({
+  const notification = await NotificationModel.create({
     institutionId: input.institutionId,
     userId: input.userId,
     type: input.type,
@@ -54,6 +55,22 @@ export async function notifyUser(input: NotifyUserInput) {
       email: emailEnabled ? 'pending' : 'skipped',
     },
   });
+
+  publishRealtimeEvent({
+    type: 'notification.created',
+    institutionId: input.institutionId,
+    userIds: [String(input.userId)],
+    payload: {
+      title: input.title,
+      body: input.body ?? '',
+      actionUrl: input.actionUrl,
+      type: input.type,
+      notificationId: String(notification._id),
+    },
+    createdAt: notification.createdAt?.toISOString() ?? new Date().toISOString(),
+  });
+
+  return notification;
 }
 
 export async function listNotifications(ctx: AuthContext, input: ListNotificationsInput) {

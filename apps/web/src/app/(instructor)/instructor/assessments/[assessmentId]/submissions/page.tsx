@@ -84,18 +84,19 @@ export default function GradingQueuePage() {
 
   return (
     <AppShell allow={['instructor', 'admin', 'super_admin']}>
-      <main className="mx-auto max-w-content px-6 py-8">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <main className="mx-auto max-w-content px-4 py-6 sm:px-6">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <Link href={assessment ? `/instructor/courses/${assessment.courseId}` : '/instructor/courses'} className="text-sm text-neutral-600">
+            <Link href={assessment ? `/instructor/courses/${assessment.courseId}` : '/instructor/courses'} className="text-sm font-semibold text-neutral-600">
               Back to course
             </Link>
-            <h1 className="font-display text-2xl font-semibold text-ink-900">
+            <p className="mt-2 text-caption font-semibold uppercase text-neutral-500">Grading operations</p>
+            <h1 className="text-2xl font-semibold text-ink-900">
               {assessment?.title ?? 'Grading queue'}
             </h1>
           </div>
           {assessment && (
-            <div className="font-mono text-sm tabular-nums text-neutral-600">
+            <div className="text-sm font-semibold tabular-nums text-neutral-600">
               Max {assessment.maxScore} · Weight {assessment.weightPercent}%
             </div>
           )}
@@ -103,7 +104,7 @@ export default function GradingQueuePage() {
 
         {error && <p className="mb-4 text-sm text-accent-alert">{error}</p>}
 
-        <div className="mb-4 grid gap-3 rounded-card border border-neutral-200 bg-surface-0 p-4 md:grid-cols-[140px_1fr_auto]">
+        <div className="mb-4 grid gap-3 rounded-lg border border-neutral-200 bg-surface-0 p-4 md:grid-cols-[140px_1fr_auto]">
           <Field
             label="Bulk score"
             type="number"
@@ -145,7 +146,7 @@ export default function GradingQueuePage() {
             {
               key: 'student',
               header: 'Student',
-              cell: (row) => <span className="font-mono text-caption">{row.studentId}</span>,
+              cell: (row) => <span className="text-caption font-semibold">{row.studentId}</span>,
             },
             {
               key: 'status',
@@ -177,7 +178,7 @@ export default function GradingQueuePage() {
                     max={assessment?.maxScore}
                     value={scores[row.id] ?? ''}
                     onChange={(e) => setScores({ ...scores, [row.id]: e.target.value })}
-                    className="h-8 w-24 rounded border border-neutral-200 px-2 text-right font-mono"
+                    className="h-8 w-24 rounded border border-neutral-200 px-2 text-right font-semibold"
                   />
                 ),
             },

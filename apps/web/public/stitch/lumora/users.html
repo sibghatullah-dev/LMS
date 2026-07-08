@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Management | Lumora LMS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-container": "#7c839b",
+                      "on-surface-variant": "#45464d",
+                      "on-secondary": "#ffffff",
+                      "on-background": "#0d1c2d",
+                      "tertiary-container": "#171c1f",
+                      "primary-fixed-dim": "#bec6e0",
+                      "on-tertiary-fixed": "#171c1f",
+                      "secondary-container": "#d0e1fb",
+                      "primary-container": "#131b2e",
+                      "primary": "#000000",
+                      "tertiary": "#000000",
+                      "surface-bright": "#f8f9ff",
+                      "surface-variant": "#d4e4fa",
+                      "on-secondary-container": "#54647a",
+                      "secondary-fixed": "#d3e4fe",
+                      "on-tertiary-fixed-variant": "#43474b",
+                      "tertiary-fixed": "#dfe3e7",
+                      "inverse-on-surface": "#e9f1ff",
+                      "surface-container": "#e5efff",
+                      "on-error-container": "#93000a",
+                      "surface-container-high": "#dbe9ff",
+                      "surface-dim": "#ccdbf2",
+                      "background": "#f8f9ff",
+                      "on-tertiary": "#ffffff",
+                      "surface-tint": "#565e74",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#233143",
+                      "error-container": "#ffdad6",
+                      "surface": "#f8f9ff",
+                      "on-surface": "#0d1c2d",
+                      "on-secondary-fixed": "#0b1c30",
+                      "tertiary-fixed-dim": "#c3c7cb",
+                      "primary-fixed": "#dae2fd",
+                      "on-primary": "#ffffff",
+                      "outline-variant": "#c6c6cd",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "error": "#ba1a1a",
+                      "inverse-primary": "#bec6e0",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "surface-container-low": "#eef4ff",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#d4e4fa",
+                      "on-tertiary-container": "#808488",
+                      "on-primary-fixed": "#131b2e",
+                      "outline": "#76777d",
+                      "secondary": "#505f76"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "container-max": "1440px",
+                      "lg": "24px",
+                      "sm": "8px",
+                      "base": "4px",
+                      "xl": "32px",
+                      "sidebar-collapsed": "64px",
+                      "xs": "4px",
+                      "sidebar-width": "240px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "h2": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "display": ["Inter"],
+                      "label-md": ["Inter"],
+                      "h1": ["Inter"],
+                      "h3": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                      "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                      "display": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                      "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- Side Navigation Shell -->
+<aside class="w-sidebar-width h-full fixed left-0 top-0 bg-surface-container-lowest dark:bg-primary-container border-r border-outline-variant dark:border-on-surface-variant flex flex-col h-full py-md px-sm z-50">
+<div class="flex items-center gap-sm px-sm mb-xl">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">school</span>
+</div>
+<div>
+<h1 class="text-h2 font-h2 text-on-background dark:text-surface-bright leading-none">Lumora LMS</h1>
+<p class="font-label-sm text-label-sm text-on-primary-container">Academic Portal</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-sm px-sm py-2 text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2 bg-surface-container dark:bg-secondary-container text-on-surface dark:text-on-secondary-container border-l-2 border-primary font-body-sm text-body-sm transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person_search</span>
+<span>User Management</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2 text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">school</span>
+<span>Courses</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2 text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span>Calendar</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2 text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2 text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span>Messaging</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-md">
+<a class="flex items-center gap-sm px-sm py-2 text-secondary hover:bg-surface-container-low font-body-sm text-body-sm transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2 text-secondary hover:bg-surface-container-low font-body-sm text-body-sm transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width min-h-screen">
+<!-- Top App Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-240px)] h-16 bg-surface dark:bg-background border-b border-outline-variant dark:border-on-surface-variant flex justify-between items-center px-lg z-40">
+<div class="flex items-center gap-md w-1/3">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-4 py-2 font-body-sm text-body-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Global search users, institutions, or roles..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-secondary hover:bg-surface-container-low p-2 rounded-full transition-all">help</button>
+<button class="material-symbols-outlined text-secondary hover:bg-surface-container-low p-2 rounded-full transition-all relative">
+                        notifications
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-sm cursor-pointer hover:bg-surface-container-low p-1 rounded-lg transition-all active:opacity-80">
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface">Alex Thompson</p>
+<p class="font-label-sm text-label-sm text-secondary">System Admin</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-outline-variant object-cover" data-alt="A professional headshot of a person with a friendly expression, captured in high-detail with soft studio lighting. The background is a clean, minimalist corporate office with neutral tones, aligning with the Lumora LMS professional and utilitarian aesthetic. The person is wearing business casual attire, reflecting a modern academic administrator persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_7VDsoLa45bxX79lkTCrxaOuuFr0vlIWhY5GRdGRr8CB_D4adl75GakTTJYQNMEkP_pMcry1Hi32s8v12AmujdaQmiBcvJ7ysowQ6qojnh8RlSejAfjzLvPoG5vyqiVSXuaKG1kWTb80_-gw1lwvT_MVhS4P8b870fwj1dvoH3OnK4Et8T6yagMxLYkLI7KI_vwtbaDzzE13eB-KRu0_LbBAS_HMmPLMHsbB3FTMZK0HGazoxYpV_ZSV7Azl9p1cM3lFvdagJI9EK"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<section class="pt-24 px-lg pb-lg">
+<!-- Breadcrumbs & Page Actions -->
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h2 class="font-h1 text-h1 text-on-surface mb-1">User Management</h2>
+<p class="font-body-md text-body-md text-secondary">Manage and monitor 1,248 registered platform members across all institutions.</p>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-md py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                        Export CSV
+                    </button>
+<button class="flex items-center gap-xs px-md py-2 bg-primary text-white rounded-lg font-label-md text-label-md hover:bg-gray-800 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+                        Invite User
+                    </button>
+</div>
+</div>
+<!-- Dashboard Stats Bento -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md mb-lg">
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl">
+<p class="font-label-md text-label-md text-secondary mb-base">Total Users</p>
+<div class="flex items-end justify-between">
+<h3 class="font-display text-display leading-none">1,248</h3>
+<span class="font-label-sm text-label-sm text-green-600 bg-green-50 px-2 py-0.5 rounded-full flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> 12%
+                        </span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl">
+<p class="font-label-md text-label-md text-secondary mb-base">Active Now</p>
+<div class="flex items-end justify-between">
+<h3 class="font-display text-display leading-none">412</h3>
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="Avatar of a male student smiling warmly, professional studio lighting, blurred academic library background, minimalist high-quality aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDzTV-F7DIF1FK1Xs77hdF3fuGTNPRIIK-FLOjuav0SpcxvYknoSwcI_Evq6nkvWYdkBf0pNvLePGdOFGrOaYLoptpAN3LOD2EOnLCJ3B_iHSVeAPfsC48vMSVVBgZXA1uvb6sEwRvq9Zk46z3U3sEIO16mnjm4sfJQjsfzlOCGZBZGSXn1YyQlmVsJ_O5LleRazta7zA0yh405MWzuV7WSsmN1EfyK2k7-Ag9C9AFHLQt7Yr4ocqFQE_mRfmQPPLhmXs_Wodj6-Bc"/>
+<img class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="Avatar of a female instructor wearing glasses, professional lighting, soft focus educational setting background, clean modern visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBp5HECEbeevPBEinPruTIkvr7u3T0_uU6_NIznBeG8Gr9AdmA-GH6k5yWa3CbnswFjpV3-WyIys16sDdUC_VYdgp7Zer6pLJbcJoPXtFSJ3x5B8-ooidEVV6CwxC-Z2Ck5qYoDQxuro-ftaw45KpJmeU4jRYEIwOigck3N5tP0FicQ1WdBuWYrcOItNPSlPe6pkICX4N1lfnBY_eRm4HyZ0CcXW47AXvl0beobHnsKBQ1aJHXW9zqcENJhebGiJ2OH4itpz4WksfjB"/>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-secondary-container flex items-center justify-center font-label-sm text-[10px] text-on-secondary-container">+18</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl">
+<p class="font-label-md text-label-md text-secondary mb-base">Pending Invites</p>
+<div class="flex items-end justify-between">
+<h3 class="font-display text-display leading-none">34</h3>
+<span class="material-symbols-outlined text-secondary opacity-50">mail</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl">
+<p class="font-label-md text-label-md text-secondary mb-base">Account Risk</p>
+<div class="flex items-end justify-between">
+<h3 class="font-display text-display leading-none">02</h3>
+<span class="font-label-sm text-label-sm text-error bg-error-container px-2 py-0.5 rounded-full">Suspended</span>
+</div>
+</div>
+</div>
+<!-- Table Controls -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+<div class="p-md flex flex-wrap items-center justify-between gap-md border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<div class="flex items-center gap-base p-1 bg-surface-container rounded-lg border border-outline-variant">
+<button class="px-md py-1.5 bg-white shadow-sm rounded-md font-label-md text-label-md text-on-surface">All Users</button>
+<button class="px-md py-1.5 hover:bg-white/50 rounded-md font-label-md text-label-md text-secondary transition-all">Students</button>
+<button class="px-md py-1.5 hover:bg-white/50 rounded-md font-label-md text-label-md text-secondary transition-all">Instructors</button>
+<button class="px-md py-1.5 hover:bg-white/50 rounded-md font-label-md text-label-md text-secondary transition-all">Admins</button>
+</div>
+<button class="flex items-center gap-xs px-md py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                            More Filters
+                        </button>
+</div>
+<div class="flex items-center gap-sm">
+<p class="font-label-sm text-label-sm text-secondary">Showing 1-10 of 1,248</p>
+<div class="flex items-center border border-outline-variant rounded-lg">
+<button class="p-2 hover:bg-surface-container-low border-r border-outline-variant opacity-50"><span class="material-symbols-outlined text-[20px]">chevron_left</span></button>
+<button class="p-2 hover:bg-surface-container-low"><span class="material-symbols-outlined text-[20px]">chevron_right</span></button>
+</div>
+</div>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-md py-3 w-10">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</th>
+<th class="px-md py-3 font-label-md text-label-md text-secondary uppercase tracking-wider">User Name</th>
+<th class="px-md py-3 font-label-md text-label-md text-secondary uppercase tracking-wider">Institution</th>
+<th class="px-md py-3 font-label-md text-label-md text-secondary uppercase tracking-wider">Role</th>
+<th class="px-md py-3 font-label-md text-label-md text-secondary uppercase tracking-wider">Status</th>
+<th class="px-md py-3 font-label-md text-label-md text-secondary uppercase tracking-wider">Last Login</th>
+<th class="px-md py-3"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- User Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-3">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-md py-3">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center font-label-md text-on-primary-fixed">JD</div>
+<div>
+<p class="font-h3 text-h3 text-on-surface leading-tight">Jane Doe</p>
+<p class="font-body-sm text-body-sm text-secondary">jane.doe@stanford.edu</p>
+</div>
+</div>
+</td>
+<td class="px-md py-3 font-body-md text-body-md text-on-surface">Stanford University</td>
+<td class="px-md py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded font-label-sm text-label-sm bg-blue-50 text-blue-700 border border-blue-100">Student</span>
+</td>
+<td class="px-md py-3">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+<span class="font-body-sm text-body-sm text-on-surface">Active</span>
+</div>
+</td>
+<td class="px-md py-3 font-body-sm text-body-sm text-secondary">2 mins ago</td>
+<td class="px-md py-3 text-right">
+<button class="p-1 rounded hover:bg-surface-container-high text-secondary transition-all opacity-0 group-hover:opacity-100">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- User Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-3">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-md py-3">
+<div class="flex items-center gap-sm">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="Close up portrait of a senior male professor with grey hair and spectacles, professional lighting, academic background, clean sharp focus, high-end corporate minimalist style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFoxsuH7JJSJlyIXzc0ddrR2Me7r1O2S_jluHfgRsFcHIFNy-exo5KWr2fhpGKceUuqWJAzvil3GIS1TRDxLAes-AHINjZUVhL1ad7puch0_RzdAbrs1HvVYnAN0c4DICZ4jBRo4eFYJmf-J70GIFrJDzlurYLSdBC84KNEXVinTgw2cNhpU3RwTMjepUCc18GEignphvabk8IUA7GZi7HwFguQNfUWRi8pqs1_oqBaknmr5n3SL5f8DbPMVkPVRcJ5-16UiABV5Uy"/>
+<div>
+<p class="font-h3 text-h3 text-on-surface leading-tight">Dr. Robert Chen</p>
+<p class="font-body-sm text-body-sm text-secondary">r.chen@mit.edu</p>
+</div>
+</div>
+</td>
+<td class="px-md py-3 font-body-md text-body-md text-on-surface">MIT Global</td>
+<td class="px-md py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded font-label-sm text-label-sm bg-purple-50 text-purple-700 border border-purple-100">Instructor</span>
+</td>
+<td class="px-md py-3">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+<span class="font-body-sm text-body-sm text-on-surface">Active</span>
+</div>
+</td>
+<td class="px-md py-3 font-body-sm text-body-sm text-secondary">14 hours ago</td>
+<td class="px-md py-3 text-right">
+<button class="p-1 rounded hover:bg-surface-container-high text-secondary transition-all opacity-0 group-hover:opacity-100">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- User Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-3">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-md py-3">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center font-label-md text-on-secondary-fixed">SB</div>
+<div>
+<p class="font-h3 text-h3 text-on-surface leading-tight">Sarah Brooks</p>
+<p class="font-body-sm text-body-sm text-secondary">sbrooks@lumora.com</p>
+</div>
+</div>
+</td>
+<td class="px-md py-3 font-body-md text-body-md text-on-surface">Lumora Internal</td>
+<td class="px-md py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded font-label-sm text-label-sm bg-slate-900 text-white">Admin</span>
+</td>
+<td class="px-md py-3">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+<span class="font-body-sm text-body-sm text-on-surface">Active</span>
+</div>
+</td>
+<td class="px-md py-3 font-body-sm text-body-sm text-secondary">Yesterday, 10:45 AM</td>
+<td class="px-md py-3 text-right">
+<button class="p-1 rounded hover:bg-surface-container-high text-secondary transition-all opacity-0 group-hover:opacity-100">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- User Row 4 (Pending) -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-3">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-md py-3">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center font-label-md text-secondary">AM</div>
+<div>
+<p class="font-h3 text-h3 text-on-surface leading-tight">Arthur Morgan</p>
+<p class="font-body-sm text-body-sm text-secondary">a.morgan@cambridge.ac.uk</p>
+</div>
+</div>
+</td>
+<td class="px-md py-3 font-body-md text-body-md text-on-surface">Cambridge University</td>
+<td class="px-md py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded font-label-sm text-label-sm bg-blue-50 text-blue-700 border border-blue-100">Student</span>
+</td>
+<td class="px-md py-3">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+<span class="font-body-sm text-body-sm text-on-surface">Pending</span>
+</div>
+</td>
+<td class="px-md py-3 font-body-sm text-body-sm text-secondary">Never</td>
+<td class="px-md py-3 text-right">
+<button class="p-1 rounded hover:bg-surface-container-high text-secondary transition-all opacity-0 group-hover:opacity-100">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- User Row 5 (Suspended) -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-3">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-md py-3">
+<div class="flex items-center gap-sm grayscale">
+<div class="w-8 h-8 rounded-full bg-error-container flex items-center justify-center font-label-md text-on-error-container">LW</div>
+<div>
+<p class="font-h3 text-h3 text-on-surface leading-tight">Lee Wong</p>
+<p class="font-body-sm text-body-sm text-secondary">lee.w@hkust.edu.hk</p>
+</div>
+</div>
+</td>
+<td class="px-md py-3 font-body-md text-body-md text-on-surface">HKUST</td>
+<td class="px-md py-3">
+<span class="inline-flex items-center px-2 py-0.5 rounded font-label-sm text-label-sm bg-blue-50 text-blue-700 border border-blue-100">Student</span>
+</td>
+<td class="px-md py-3">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span class="font-body-sm text-body-sm text-error">Suspended</span>
+</div>
+</td>
+<td class="px-md py-3 font-body-sm text-body-sm text-secondary">Jan 12, 2024</td>
+<td class="px-md py-3 text-right">
+<button class="p-1 rounded hover:bg-surface-container-high text-secondary transition-all opacity-0 group-hover:opacity-100">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="px-md py-md bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between">
+<button class="font-label-md text-label-md text-secondary hover:text-on-surface transition-all flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span> Previous
+                    </button>
+<div class="flex items-center gap-base">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white font-label-md text-label-md">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container font-label-md text-label-md text-secondary">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container font-label-md text-label-md text-secondary">3</button>
+<span class="text-secondary px-2">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container font-label-md text-label-md text-secondary">125</button>
+</div>
+<button class="font-label-md text-label-md text-secondary hover:text-on-surface transition-all flex items-center gap-xs">
+                        Next <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Quick Actions (Contextual) -->
+<div class="fixed bottom-lg right-lg flex flex-col gap-sm">
+<button class="w-12 h-12 rounded-full bg-white shadow-lg border border-outline-variant text-secondary flex items-center justify-center hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">support_agent</span>
+</button>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        // Checkbox "Select All" functionality
+        const masterCheckbox = document.querySelector('thead input[type="checkbox"]');
+        const rowCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+        
+        masterCheckbox?.addEventListener('change', (e) => {
+            rowCheckboxes.forEach(cb => {
+                cb.checked = e.target.checked;
+                const row = cb.closest('tr');
+                if (e.target.checked) {
+                    row.classList.add('bg-surface-container-low');
+                } else {
+                    row.classList.remove('bg-surface-container-low');
+                }
+            });
+        });
+
+        rowCheckboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const row = cb.closest('tr');
+                if (cb.checked) {
+                    row.classList.add('bg-surface-container-low');
+                } else {
+                    row.classList.remove('bg-surface-container-low');
+                }
+                
+                const allChecked = Array.from(rowCheckboxes).every(c => c.checked);
+                const someChecked = Array.from(rowCheckboxes).some(c => c.checked);
+                masterCheckbox.checked = allChecked;
+                masterCheckbox.indeterminate = someChecked && !allChecked;
+            });
+        });
+
+        // Simple Search Filter Simulation
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput?.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? 'table-row' : 'none';
+            });
+        });
+    </script>
+<script src="/stitch/lumora/bridge.js"></script>
+</body></html>

@@ -18,7 +18,7 @@ export default function DesignSystemPage() {
         <span className="text-caption font-medium uppercase tracking-[0.02em] text-neutral-600">
           Lumora
         </span>
-        <h1 className="font-display text-3xl font-bold text-ink-900">Design System</h1>
+        <h1 className="text-3xl font-bold text-ink-900">Design System</h1>
         <p className="mt-2 text-base text-neutral-600">
           UI/UX Design Specification §2 — tokens and core components.
         </p>
@@ -26,7 +26,7 @@ export default function DesignSystemPage() {
 
       <Section title="Typography (§2.3)">
         <div className="space-y-2">
-          <p className="font-display text-3xl font-bold">Space Grotesk 40/700 — Display H1</p>
+          <p className="text-3xl font-bold">Space Grotesk 40/700 — Display H1</p>
           <p className="font-sans text-base">Inter 16/400 — body copy and UI.</p>
           <p className="font-mono text-base tabular-nums">IBM Plex Mono — 92.5% · 12:04 / 18:30</p>
         </div>
@@ -84,7 +84,7 @@ export default function DesignSystemPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-12">
-      <h2 className="mb-4 font-display text-xl font-semibold text-ink-900">{title}</h2>
+      <h2 className="mb-4 text-xl font-semibold text-ink-900">{title}</h2>
       {children}
     </section>
   );
@@ -93,7 +93,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Swatch({ name, className }: { name: string; className: string }) {
   return (
     <div
-      className={`flex h-20 w-32 items-end rounded-card p-2 text-caption font-medium ${className}`}
+      className={`flex h-20 w-32 items-end rounded-lg p-2 text-caption font-medium ${className}`}
     >
       {name}
     </div>

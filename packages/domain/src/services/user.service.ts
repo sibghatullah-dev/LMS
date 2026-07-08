@@ -11,12 +11,26 @@ import type {
 import { hashPassword } from './password';
 import { toPublicUser, type PublicUser } from './serialize';
 import { writeAudit } from './audit.service';
+import { InstitutionModel } from '../models/institution.model';
 
 /** GET /users/me. */
 export async function getMe(ctx: AuthContext): Promise<PublicUser> {
-  const user = await UserModel.findById(ctx.userId);
+  const [user, institution] = await Promise.all([
+    UserModel.findById(ctx.userId),
+    InstitutionModel.findById(ctx.institutionId).select('featureFlags'),
+  ]);
   if (!user) throw NotFoundError('User not found.');
-  return toPublicUser(user);
+  const publicUser = toPublicUser(user);
+  if (institution?.featureFlags) {
+    publicUser.institutionFeatureFlags = {
+      nativeLiveClassroom: institution.featureFlags.nativeLiveClassroom ?? false,
+      zoomIntegration: institution.featureFlags.zoomIntegration ?? false,
+      teamsIntegration: institution.featureFlags.teamsIntegration ?? false,
+      alumniPortal: institution.featureFlags.alumniPortal ?? true,
+      gamification: institution.featureFlags.gamification ?? true,
+    };
+  }
+  return publicUser;
 }
 
 /** GET /users/{id} — within the caller's institution only (tenant isolation). */

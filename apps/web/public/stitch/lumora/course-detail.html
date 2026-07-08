@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumora LMS - Course Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#7c839b",
+                        "on-surface-variant": "#45464d",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#0d1c2d",
+                        "tertiary-container": "#171c1f",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-tertiary-fixed": "#171c1f",
+                        "secondary-container": "#d0e1fb",
+                        "primary-container": "#131b2e",
+                        "primary": "#000000",
+                        "tertiary": "#000000",
+                        "surface-bright": "#f8f9ff",
+                        "surface-variant": "#d4e4fa",
+                        "on-secondary-container": "#54647a",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#43474b",
+                        "tertiary-fixed": "#dfe3e7",
+                        "inverse-on-surface": "#e9f1ff",
+                        "surface-container": "#e5efff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#dbe9ff",
+                        "surface-dim": "#ccdbf2",
+                        "background": "#f8f9ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#565e74",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#233143",
+                        "error-container": "#ffdad6",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#0d1c2d",
+                        "on-secondary-fixed": "#0b1c30",
+                        "tertiary-fixed-dim": "#c3c7cb",
+                        "primary-fixed": "#dae2fd",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c6c6cd",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#bec6e0",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface-container-low": "#eef4ff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#d4e4fa",
+                        "on-tertiary-container": "#808488",
+                        "on-primary-fixed": "#131b2e",
+                        "outline": "#76777d",
+                        "secondary": "#505f76"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "container-max": "1440px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "sidebar-collapsed": "64px",
+                        "xs": "4px",
+                        "sidebar-width": "240px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "h3": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                        "display": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab {
+            border-bottom: 2px solid #000000;
+            color: #000000;
+            font-weight: 600;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar (Authority: JSON & Style Guidance) -->
+<aside class="w-sidebar-width h-full fixed left-0 top-0 bg-surface-container-lowest dark:bg-primary-container border-r border-outline-variant dark:border-on-surface-variant flex flex-col py-md px-sm z-50">
+<div class="mb-xl px-sm flex items-center gap-sm">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="school">school</span>
+</div>
+<div>
+<h1 class="text-h2 font-h2 text-on-background dark:text-surface-bright leading-none">Lumora LMS</h1>
+<p class="text-label-sm font-label-sm text-secondary">Academic Portal</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Nav item - Active state: Courses (based on current context) -->
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out bg-surface-container dark:bg-secondary-container text-on-surface dark:text-on-secondary-container border-l-2 border-primary font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+                Courses
+            </a>
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+                Calendar
+            </a>
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+                Resources
+            </a>
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                Reports
+            </a>
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+                Messaging
+            </a>
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+                Events
+            </a>
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-secondary dark:text-on-secondary-container hover:bg-surface-container-low font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+                Notifications
+            </a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-md">
+<div class="flex items-center gap-sm px-sm">
+<img class="w-8 h-8 rounded-full border border-outline" data-alt="A small circular professional headshot of a student for an LMS user profile, clean background, high quality studio lighting, professional corporate photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2W0aVVu-G_DpDdpQGjHdFX7PMcIl8e5CHDw4PqRbE9M4ZBax-2lm6d5stU2ayrLCpodo2YEiyDwyIy28joHVR4Q9DunMd3Btl_zNxK_Cs1s3Uqpk75MTv0mCxEzUnsxP7jGhChENnu09TpDcjdaw3DtH2EJ7XJcgEMqIs2dKI2mzfPrM7cn48RVJEU-pXXTvN7bXe3QGUxPN09qkdVW3extRgT3zbOxWWipe1vEPXzjyFNp5mNtbNsttDoC5yWTPnIdIf9Iy-pww9"/>
+<div class="overflow-hidden">
+<p class="text-label-md font-label-md text-on-surface truncate">Alex Rivers</p>
+<p class="text-label-sm font-label-sm text-secondary truncate">Student ID: 44921</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<main class="ml-[240px] flex flex-col min-h-screen">
+<!-- TopAppBar (Authority: JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-240px)] h-16 bg-surface dark:bg-background border-b border-outline-variant dark:border-on-surface-variant flex justify-between items-center px-lg z-40">
+<div class="flex items-center flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-lg text-body-sm focus:outline-none focus:border-primary transition-all" placeholder="Search course content..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-secondary hover:bg-surface-container-low p-2 rounded-full transition-all" data-icon="help">help</button>
+<button class="material-symbols-outlined text-secondary hover:bg-surface-container-low p-2 rounded-full transition-all" data-icon="settings">settings</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-2 cursor-pointer active:opacity-80">
+<img class="w-8 h-8 rounded-full bg-surface-variant" data-alt="User profile avatar icon placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlZq5HNiOZz6ycaOaNFCVqy7OjTRS2PPqubv9AYTiaSAG_pVD0jokrOC5IV3ppleL8wK-2shI8Jf1HMyLIj7-fTbcFQ-DByEl2MuDMeiLES0fZdbPapaRPsuHFpbb437cYfPKcwuFyqGFsKWg4tW-n99KSuqUUMKprNH8LKohV_H9vlns1i6iCvj-4VnXi4aBVm2Vdq9l5Yo2Yz1KomE4Tg_s-5F3ypEWUwiI08nULV_ggt4wBo6vgYcZz62CkGgr0wA6E_UJA7tES"/>
+</div>
+</div>
+</header>
+<!-- Course Canvas Content -->
+<div class="mt-16 p-lg flex-1 overflow-auto bg-surface">
+<!-- Breadcrumbs & Header -->
+<nav class="flex items-center gap-xs text-label-sm font-label-sm text-secondary mb-base">
+<span>Courses</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface">Data Structures &amp; Algorithms (CS302)</span>
+</nav>
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h2 class="font-display text-display text-on-background">Advanced Data Structures</h2>
+<p class="font-body-md text-body-md text-secondary">Semester 1 • Section A • Instructor: Dr. Julian Vance</p>
+</div>
+<div class="flex gap-sm">
+<div class="flex items-center gap-sm bg-surface-container px-md py-base rounded-lg border border-outline-variant">
+<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
+<span class="font-label-md text-label-md text-on-surface">Live session active</span>
+</div>
+</div>
+</div>
+<!-- Tabbed Interface -->
+<div class="flex gap-xl border-b border-outline-variant mb-lg">
+<button class="px-base py-md text-label-md font-label-md active-tab cursor-pointer hover:text-on-surface transition-all">Content</button>
+<button class="px-base py-md text-label-md font-label-md text-secondary cursor-pointer hover:text-on-surface transition-all">Assignments</button>
+<button class="px-base py-md text-label-md font-label-md text-secondary cursor-pointer hover:text-on-surface transition-all">Live Sessions</button>
+<button class="px-base py-md text-label-md font-label-md text-secondary cursor-pointer hover:text-on-surface transition-all">Resources</button>
+</div>
+<!-- Layout Grid -->
+<div class="grid grid-cols-12 gap-lg items-start">
+<!-- Main Content (Modules) - Column 1-8 -->
+<div class="col-span-8 space-y-md">
+<!-- Progress Overview -->
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-lg">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-variant" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="6"></circle>
+<circle class="text-primary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175.9" stroke-dashoffset="44" stroke-width="6"></circle>
+</svg>
+<span class="absolute font-label-md text-label-md">75%</span>
+</div>
+<div>
+<h4 class="font-h3 text-h3 text-on-background">Course Progress</h4>
+<p class="text-body-sm font-body-sm text-secondary">12 of 16 modules completed</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Next Milestone</p>
+<p class="font-label-md text-label-md text-on-surface">Module 4: Graph Theory Quiz</p>
+</div>
+</div>
+<!-- Module Structure -->
+<div class="space-y-base">
+<!-- Module 1: Completed -->
+<div class="group">
+<div class="bg-surface-container-low border border-outline-variant p-md flex items-center gap-md hover:bg-surface-container transition-all cursor-pointer">
+<span class="material-symbols-outlined text-success text-[20px]" data-icon="check_circle" data-weight="fill" style="color: #16a34a;">check_circle</span>
+<div class="flex-1">
+<p class="font-label-sm text-label-sm text-secondary">MODULE 1</p>
+<h4 class="font-h3 text-h3 text-on-surface">Foundations of Algorithms</h4>
+</div>
+<span class="material-symbols-outlined text-secondary transition-transform group-hover:rotate-180">expand_more</span>
+</div>
+</div>
+<!-- Module 2: Current -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden">
+<div class="p-md flex items-center gap-md bg-surface-container-high/30 border-b border-outline-variant">
+<div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-2 h-2 bg-primary rounded-full"></div>
+</div>
+<div class="flex-1">
+<p class="font-label-sm text-label-sm text-primary font-bold">CURRENT MODULE</p>
+<h4 class="font-h3 text-h3 text-on-surface">Module 2: Advanced Tree Structures</h4>
+</div>
+<span class="material-symbols-outlined text-secondary">expand_less</span>
+</div>
+<div class="p-0">
+<!-- Lesson List -->
+<div class="divide-y divide-outline-variant">
+<div class="flex items-center justify-between p-md hover:bg-surface-container-low cursor-pointer group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="description">description</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">2.1 Binary Search Trees Revisited</p>
+<p class="text-label-sm font-label-sm text-secondary">Reading • 15 min</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-success" style="color: #16a34a;">check_circle</span>
+</div>
+<div class="flex items-center justify-between p-md bg-primary-container/5 border-l-4 border-primary">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="play_circle">play_circle</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-bold">2.2 AVL Trees and Self-Balancing Logic</p>
+<p class="text-label-sm font-label-sm text-secondary">Video • 42 min</p>
+</div>
+</div>
+<button class="bg-primary text-on-primary px-md py-xs rounded text-label-md font-label-md">Resume</button>
+</div>
+<div class="flex items-center justify-between p-md hover:bg-surface-container-low cursor-pointer group">
+<div class="flex items-center gap-md opacity-60">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="quiz">quiz</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface">2.3 Tree Traversal Patterns</p>
+<p class="text-label-sm font-label-sm text-secondary">Interactive Quiz • 10 Questions</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary" data-icon="lock">lock</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Module 3: Locked -->
+<div class="group opacity-70 grayscale">
+<div class="bg-surface-container-low border border-outline-variant p-md flex items-center gap-md cursor-not-allowed">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="lock">lock</span>
+<div class="flex-1">
+<p class="font-label-sm text-label-sm text-secondary">MODULE 3</p>
+<h4 class="font-h3 text-h3 text-on-surface">Red-Black Trees &amp; Heaps</h4>
+</div>
+<span class="material-symbols-outlined text-secondary">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar (Course Details) - Column 9-12 -->
+<div class="col-span-4 space-y-lg sticky top-20">
+<!-- Join Live Session Shortcut (Primary Action) -->
+<div class="relative overflow-hidden bg-primary text-on-primary p-md rounded-xl shadow-lg group">
+
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-md">
+<span class="bg-error text-on-error text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest">Live Now</span>
+<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
+</div>
+<h3 class="font-h2 text-h2 mb-base">Lecture: B-Tree Efficiency</h3>
+<p class="text-label-md font-label-md opacity-80 mb-lg">Join Dr. Vance and 42 others in the virtual classroom.</p>
+<button class="w-full bg-on-primary text-primary font-label-md py-md rounded-lg flex items-center justify-center gap-sm hover:scale-[1.02] active:scale-95 transition-all">
+                                Join Live Session
+                                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Course Info Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md">
+<h4 class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-md">Course Metadata</h4>
+<div class="space-y-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="A portrait of a distinguished university professor in a formal academic setting, soft studio lighting, high resolution, professional photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUFwNB1sXt-vLQWEZ6GG0N5ISKv66NKMlEyeDTFtOEBQmh46J3SumSHA-8e6KM8Uab9tLo88uQA88-vKJMfh_vsuiyq9M_GCvuVtTGBl1XEGtY7ScrccYu1ghWyVal8mB3mmyvxHnv0GbOmJDjCiFWFGiXXllhYv8AUtXIoL1LItrhXYF85dL4RMVx_NU1oaxJT4myptPeBhlTFrlP89H-SiZxAIF--gAnJKyzNXOnkZZ6z9coQUAliNKLocYjW-vSiKeNXxHP6LbT"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Dr. Julian Vance</p>
+<p class="text-label-sm font-label-sm text-secondary">Primary Instructor</p>
+</div>
+<button class="ml-auto text-primary hover:bg-surface-container p-1 rounded-md transition-all">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-sm border-t border-outline-variant pt-md">
+<div class="bg-surface-container-low p-sm rounded-lg border border-outline-variant/30">
+<p class="text-label-sm font-label-sm text-secondary mb-1">Credits</p>
+<p class="font-h3 text-h3 text-on-surface">4.0</p>
+</div>
+<div class="bg-surface-container-low p-sm rounded-lg border border-outline-variant/30">
+<p class="text-label-sm font-label-sm text-secondary mb-1">ID</p>
+<p class="font-h3 text-h3 text-on-surface">CS302</p>
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center gap-sm text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span>
+<span>Mon, Wed, Fri • 10:00 AM</span>
+</div>
+<div class="flex items-center gap-sm text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>Engineering Hall, Rm 402</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Upcoming Deadlines -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md">
+<div class="flex justify-between items-center mb-md">
+<h4 class="font-label-md text-label-md text-secondary uppercase tracking-wider">Deadlines</h4>
+<a class="text-label-sm font-label-sm text-primary hover:underline" href="#">View All</a>
+</div>
+<div class="space-y-md">
+<div class="flex gap-md border-l-2 border-error pl-md py-1">
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-surface">Assignment 4: AVL Implementation</p>
+<p class="text-label-sm font-label-sm text-error font-bold">Due in 4 hours</p>
+</div>
+</div>
+<div class="flex gap-md border-l-2 border-outline-variant pl-md py-1">
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-surface">Mid-term Project Proposal</p>
+<p class="text-label-sm font-label-sm text-secondary">Due Oct 24, 2023</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB for Quick Actions (Mandatory Suppression check passed: This is a top-level Course Detail view) -->
+<button class="fixed bottom-lg right-lg w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50 group">
+<span class="material-symbols-outlined text-[24px]">question_answer</span>
+<span class="absolute right-16 bg-on-background text-on-primary px-md py-xs rounded text-label-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Ask TA a question</span>
+</button>
+<script>
+        // Micro-interaction for tab switching
+        document.querySelectorAll('button.text-label-md').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('button.text-label-md').forEach(t => t.classList.remove('active-tab', 'text-on-surface'));
+                tab.classList.add('active-tab', 'text-on-surface');
+            });
+        });
+
+        // Hover effect for side nav
+        const navItems = document.querySelectorAll('aside nav a');
+        navItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                if (!item.classList.contains('bg-surface-container')) {
+                    item.classList.add('bg-surface-container-low');
+                }
+            });
+            item.addEventListener('mouseleave', () => {
+                if (!item.classList.contains('bg-surface-container')) {
+                    item.classList.remove('bg-surface-container-low');
+                }
+            });
+        });
+    </script>
+<script src="/stitch/lumora/bridge.js"></script>
+</body></html>

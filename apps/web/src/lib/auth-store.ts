@@ -12,6 +12,13 @@ export interface SessionUser {
   status: string;
   emailVerified: boolean;
   notificationPreferences: { email: boolean; sms: boolean; inApp: boolean };
+  institutionFeatureFlags?: {
+    nativeLiveClassroom: boolean;
+    zoomIntegration: boolean;
+    teamsIntegration: boolean;
+    alumniPortal: boolean;
+    gamification: boolean;
+  };
 }
 
 interface AuthState {
@@ -19,7 +26,7 @@ interface AuthState {
   accessToken: string | null;
   /** 'unknown' until the initial refresh attempt resolves. */
   status: 'unknown' | 'anon' | 'authed';
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, institutionSlug?: string) => Promise<void>;
   logout: () => Promise<void>;
   loadSession: () => Promise<void>;
   setUser: (user: SessionUser) => void;
@@ -32,10 +39,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: null,
   status: 'unknown',
 
-  login: async (email, password) => {
+  login: async (email, password, institutionSlug) => {
     const data = await apiFetch<{ user: SessionUser; accessToken: string }>('/auth/login', {
       method: 'POST',
-      body: { email, password },
+      body: { email, password, ...(institutionSlug ? { institutionSlug } : {}) },
     });
     set({ user: data.user, accessToken: data.accessToken, status: 'authed' });
   },

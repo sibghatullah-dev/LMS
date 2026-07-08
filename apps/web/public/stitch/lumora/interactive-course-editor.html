@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumora LMS - Course Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .sidebar-active-indicator {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+        }
+
+        /* Module Transitions */
+        .module-content {
+            transition: max-height 0.3s ease-out, opacity 0.2s ease-in-out;
+            max-height: 1000px;
+            overflow: hidden;
+        }
+        .module-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        /* Action Feedback */
+        @keyframes click-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.97); }
+            100% { transform: scale(1); }
+        }
+        .btn-pulse:active {
+            animation: click-pulse 0.2s ease-out;
+        }
+
+        /* Drag-and-Drop Hint */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 2.5s ease-in-out infinite;
+        }
+
+        /* Editor Focus Mode */
+        .editor-workspace {
+            transition: all 0.3s ease-in-out;
+        }
+        .editor-workspace:focus-within {
+            transform: scale(1.005);
+            box-shadow: 0 0 0 1px theme('colors.primary'), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Lesson Hover States */
+        .lesson-item {
+            transition: all 0.2s ease-out;
+        }
+        .lesson-item:hover {
+            transform: translateX(4px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-primary-container": "#7c839b",
+                        "inverse-surface": "#233143",
+                        "surface-tint": "#565e74",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#43474b",
+                        "on-secondary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "tertiary-fixed-dim": "#c3c7cb",
+                        "outline-variant": "#c6c6cd",
+                        "on-secondary-container": "#54647a",
+                        "tertiary-fixed": "#dfe3e7",
+                        "surface-container-highest": "#d4e4fa",
+                        "tertiary-container": "#171c1f",
+                        "surface-dim": "#ccdbf2",
+                        "secondary": "#505f76",
+                        "primary-container": "#131b2e",
+                        "on-surface": "#0d1c2d",
+                        "secondary-fixed": "#d3e4fe",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary-container": "#d0e1fb",
+                        "on-secondary-fixed": "#0b1c30",
+                        "primary-fixed": "#dae2fd",
+                        "surface-container": "#e5efff",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#bec6e0",
+                        "surface-container-high": "#dbe9ff",
+                        "on-tertiary-fixed": "#171c1f",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-surface-variant": "#45464d",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-container-low": "#eef4ff",
+                        "on-background": "#0d1c2d",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#e9f1ff",
+                        "outline": "#76777d",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "surface-bright": "#f8f9ff",
+                        "tertiary": "#000000",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#808488",
+                        "surface": "#f8f9ff",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#d4e4fa",
+                        "primary": "#000000",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "sidebar-collapsed": "64px",
+                        "lg": "24px",
+                        "sidebar-width": "240px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h2": ["Inter"],
+                        "h1": ["Inter"],
+                        "display": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h3": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                        "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-background selection:bg-surface-container-highest">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-container-lowest border-r border-outline-variant flex flex-col h-full py-lg px-md z-30">
+<div class="mb-xl px-sm">
+<h1 class="font-h1 text-h1 font-bold text-on-surface">Lumora</h1>
+<p class="font-body-sm text-body-sm text-on-primary-container">LMS Platform</p>
+</div>
+<nav class="flex-grow space-y-base">
+<a class="flex items-center gap-sm px-md py-sm transition-colors duration-200 ease-in-out text-secondary hover:bg-surface-container-high rounded" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-sm">Dashboard</span>
+</a>
+<a class="relative flex items-center gap-sm px-md py-sm transition-colors duration-200 ease-in-out bg-surface-container text-primary border-l-2 border-primary font-semibold rounded-r" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-body-sm">Courses</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm transition-colors duration-200 ease-in-out text-secondary hover:bg-surface-container-high rounded" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-sm">Calendar</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm transition-colors duration-200 ease-in-out text-secondary hover:bg-surface-container-high rounded" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="font-body-sm">Resources</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm transition-colors duration-200 ease-in-out text-secondary hover:bg-surface-container-high rounded" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-sm">Reports</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg border-t border-outline-variant space-y-base">
+<a class="flex items-center gap-sm px-md py-sm transition-colors duration-200 ease-in-out text-secondary hover:bg-surface-container-high rounded" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-body-sm">Profile</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm transition-colors duration-200 ease-in-out text-secondary hover:bg-surface-container-high rounded" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-sm">Settings</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm transition-colors duration-200 ease-in-out text-error hover:bg-error-container/20 rounded" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-sm">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-0 h-16 ml-sidebar-width bg-surface border-b border-outline-variant flex justify-between items-center px-lg z-20">
+<div class="flex items-center gap-md">
+<div class="relative group">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-lg font-body-sm w-64 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Search lessons..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-outline hover:text-on-surface transition-opacity duration-150">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-outline hover:text-on-surface transition-opacity duration-150">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-label-md">
+                JD
+            </div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-sidebar-width pt-16 min-h-screen">
+<!-- Editor Header -->
+<div class="bg-surface border-b border-outline-variant px-lg py-md flex items-center justify-between">
+<div class="flex items-center gap-md">
+<button class="p-1 hover:bg-surface-container rounded transition-colors">
+<span class="material-symbols-outlined text-secondary" data-icon="arrow_back">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center gap-sm">
+<h2 class="font-h2 text-h2 text-on-surface">Advanced Macroeconomics: Market Dynamics</h2>
+<span class="px-2 py-0.5 bg-surface-container-highest text-on-primary-container font-label-sm text-label-sm rounded uppercase tracking-wider">Draft</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary">Last saved 4 minutes ago</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="px-md py-sm border border-outline-variant text-secondary font-label-md text-label-md rounded-lg hover:bg-surface-container transition-colors flex items-center gap-sm btn-pulse">
+<span class="material-symbols-outlined text-[18px]" data-icon="visibility">visibility</span>
+                    Preview
+                </button>
+<button class="px-md py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-sm btn-pulse">
+<span class="material-symbols-outlined text-[18px]" data-icon="publish">publish</span>
+                    Publish Course
+                </button>
+</div>
+</div>
+<!-- Tab Navigation -->
+<div class="bg-surface border-b border-outline-variant px-lg">
+<div class="flex gap-xl">
+<button class="py-md border-b-2 border-primary text-primary font-label-md text-label-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="list_alt">list_alt</span>
+                    Curriculum
+                </button>
+<button class="py-md border-b-2 border-transparent text-outline hover:text-on-surface font-label-md text-label-md flex items-center gap-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+                    Settings
+                </button>
+<button class="py-md border-b-2 border-transparent text-outline hover:text-on-surface font-label-md text-label-md flex items-center gap-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="group">group</span>
+                    Students
+                </button>
+<button class="py-md border-b-2 border-transparent text-outline hover:text-on-surface font-label-md text-label-md flex items-center gap-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="trending_up">trending_up</span>
+                    Analytics
+                </button>
+</div>
+</div>
+<!-- Editor Canvas -->
+<div class="flex h-[calc(100vh-10rem)]">
+<!-- Left Panel: Curriculum Tree -->
+<div class="w-80 border-r border-outline-variant overflow-y-auto bg-surface-container-lowest p-md">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-h3 text-h3 text-on-surface">Course Content</h3>
+<button class="p-1 text-primary hover:bg-primary-container/10 rounded transition-colors">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+</div>
+<div class="space-y-sm">
+<!-- Module 1 -->
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<button class="w-full flex items-center justify-between p-sm bg-surface-container-low hover:bg-surface-container transition-colors text-left" onclick="toggleAccordion('module-1')">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="drag_indicator">drag_indicator</span>
+<span class="font-label-md text-label-md uppercase text-secondary">Module 1</span>
+</div>
+<span class="material-symbols-outlined transition-transform duration-300" data-icon="expand_more" id="icon-module-1">expand_more</span>
+</button>
+<div class="module-content bg-white" id="module-1">
+<div class="p-base space-y-base">
+<div class="font-body-sm font-semibold px-md py-xs text-on-surface mb-xs">Foundations of Macro</div>
+<div class="lesson-item flex items-center justify-between p-sm hover:bg-surface-container-low rounded-md group cursor-pointer bg-surface-container">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="play_circle">play_circle</span>
+<span class="font-body-sm text-primary font-medium">Supply and Demand Overview</span>
+</div>
+<span class="material-symbols-outlined text-outline opacity-0 group-hover:opacity-100 text-[18px] transition-opacity" data-icon="edit">edit</span>
+</div>
+<div class="lesson-item flex items-center justify-between p-sm hover:bg-surface-container-low rounded-md group cursor-pointer">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="description">description</span>
+<span class="font-body-sm">Equilibrium Analysis PDF</span>
+</div>
+<span class="material-symbols-outlined text-outline opacity-0 group-hover:opacity-100 text-[18px] transition-opacity" data-icon="edit">edit</span>
+</div>
+<div class="lesson-item flex items-center justify-between p-sm hover:bg-surface-container-low rounded-md group cursor-pointer">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="quiz">quiz</span>
+<span class="font-body-sm">Chapter 1 Checkpoint</span>
+</div>
+<span class="material-symbols-outlined text-outline opacity-0 group-hover:opacity-100 text-[18px] transition-opacity" data-icon="edit">edit</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Module 2 -->
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<button class="w-full flex items-center justify-between p-sm bg-surface-container-low hover:bg-surface-container transition-colors text-left" onclick="toggleAccordion('module-2')">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="drag_indicator">drag_indicator</span>
+<span class="font-label-md text-label-md uppercase text-secondary">Module 2</span>
+</div>
+<span class="material-symbols-outlined transition-transform duration-300" data-icon="expand_more" id="icon-module-2">expand_more</span>
+</button>
+<div class="module-content bg-white" id="module-2">
+<div class="p-base space-y-base">
+<div class="font-body-sm font-semibold px-md py-xs text-on-surface mb-xs">Market Interventions</div>
+<div class="lesson-item flex items-center justify-between p-sm hover:bg-surface-container-low rounded-md group cursor-pointer">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="play_circle">play_circle</span>
+<span class="font-body-sm">Price Floors and Ceilings</span>
+</div>
+<span class="material-symbols-outlined text-outline opacity-0 group-hover:opacity-100 text-[18px] transition-opacity" data-icon="edit">edit</span>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full py-sm border border-dashed border-outline-variant rounded-lg text-outline hover:text-primary hover:border-primary transition-all flex items-center justify-center gap-sm font-label-md text-label-md active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                        Add New Module
+                    </button>
+</div>
+</div>
+<!-- Middle: Lesson Editor -->
+<div class="flex-grow overflow-y-auto bg-white p-xl">
+<div class="editor-workspace max-w-3xl mx-auto space-y-xl p-md rounded-xl">
+<header class="flex items-center justify-between">
+<h3 class="font-h1 text-h1 text-on-surface">Edit Lesson</h3>
+<div class="flex gap-sm">
+<button class="p-2 hover:bg-surface-container rounded-full text-secondary transition-colors" title="Delete Lesson">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+<button class="p-2 hover:bg-surface-container rounded-full text-secondary transition-colors" title="Duplicate">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</header>
+<!-- Form Fields -->
+<div class="space-y-lg">
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-secondary">Lesson Title</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" type="text" value="Supply and Demand Overview"/>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-secondary">Content Type</label>
+<select class="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all bg-white appearance-none">
+<option>Video Lesson</option>
+<option>Quiz</option>
+<option>Document / Text</option>
+<option>Assignment</option>
+</select>
+</div>
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-secondary">Estimated Time (min)</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" type="number" value="15"/>
+</div>
+</div>
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-secondary">Description</label>
+<div class="border border-outline-variant rounded-lg overflow-hidden transition-shadow focus-within:ring-1 focus-within:ring-primary">
+<div class="bg-surface-container-low px-sm py-xs border-b border-outline-variant flex gap-xs">
+<button class="p-1.5 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="format_bold">format_bold</span></button>
+<button class="p-1.5 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="format_italic">format_italic</span></button>
+<button class="p-1.5 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="format_list_bulleted">format_list_bulleted</span></button>
+<button class="p-1.5 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="link">link</span></button>
+<div class="w-px h-5 bg-outline-variant mx-xs"></div>
+<button class="p-1.5 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="image">image</span></button>
+</div>
+<textarea class="w-full px-md py-sm font-body-md focus:outline-none resize-none border-none" rows="6">In this lesson, we cover the core principles of supply and demand curves. Students will learn how to identify equilibrium points and understand the factors that shift these curves in a global macroeconomic context.</textarea>
+</div>
+</div>
+<div class="space-y-sm">
+<label class="font-label-md text-label-md text-secondary">Resources &amp; Files</label>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center gap-sm bg-surface-container-lowest hover:bg-surface-container-low transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-outline text-[40px] animate-float group-hover:text-primary transition-colors" data-icon="cloud_upload">cloud_upload</span>
+<div class="text-center">
+<p class="font-body-md text-on-surface group-hover:text-primary transition-colors">Click to upload or drag and drop</p>
+<p class="font-label-sm text-label-sm text-outline">PDF, DOCX, MP4 or XLSX (max. 50MB)</p>
+</div>
+</div>
+<!-- Existing resources -->
+<div class="space-y-xs mt-md">
+<div class="flex items-center justify-between p-sm border border-outline-variant rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="picture_as_pdf">picture_as_pdf</span>
+<span class="font-body-sm">Lecture_Slides_Week1.pdf</span>
+</div>
+<button class="text-error hover:text-red-700 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Panel: Lesson Settings -->
+<div class="w-72 border-l border-outline-variant bg-surface-container-low overflow-y-auto p-md space-y-xl">
+<div>
+<h4 class="font-label-md text-label-md uppercase text-secondary mb-md">Lesson Settings</h4>
+<div class="space-y-lg">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-body-md text-on-surface font-medium">Draft Mode</p>
+<p class="font-label-sm text-label-sm text-secondary">Hide from students</p>
+</div>
+<button class="relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-primary transition-colors duration-200 ease-in-out focus:outline-none">
+<span class="translate-x-5 pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-body-md text-on-surface font-medium">Required to complete</p>
+<p class="font-label-sm text-label-sm text-secondary">Mandatory lesson</p>
+</div>
+<button class="relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-outline-variant transition-colors duration-200 ease-in-out focus:outline-none">
+<span class="translate-x-0 pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-body-md text-on-surface font-medium">Allow Preview</p>
+<p class="font-label-sm text-label-sm text-secondary">Show without login</p>
+</div>
+<button class="relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-outline-variant transition-colors duration-200 ease-in-out focus:outline-none">
+<span class="translate-x-0 pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+</button>
+</div>
+</div>
+</div>
+<div class="pt-lg border-t border-outline-variant">
+<h4 class="font-label-md text-label-md uppercase text-secondary mb-md">Drip Scheduling</h4>
+<div class="space-y-md">
+<div class="space-y-sm">
+<label class="font-label-sm text-label-sm text-secondary">Release Content</label>
+<select class="w-full px-md py-sm border border-outline-variant rounded-lg font-body-sm bg-white outline-none">
+<option>Immediately</option>
+<option>After specific date</option>
+<option>Days after enrollment</option>
+</select>
+</div>
+<div class="p-sm bg-surface-container-highest/30 rounded-lg border border-surface-container-highest">
+<div class="flex gap-sm items-start">
+<span class="material-symbols-outlined text-on-primary-container text-[18px]" data-icon="info">info</span>
+<p class="font-label-sm text-label-sm text-on-primary-container leading-tight">Drip settings apply once the course is published for active students.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-lg">
+<button class="w-full py-sm bg-inverse-surface text-inverse-on-surface rounded-lg font-label-md text-label-md hover:bg-on-surface transition-all btn-pulse">
+                        Save Changes
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            
+            if (content.classList.contains("collapsed")) {
+                content.classList.remove("collapsed");
+                icon.style.transform = "rotate(0deg)";
+            } else {
+                content.classList.add("collapsed");
+                icon.style.transform = "rotate(-90deg)";
+            }
+        }
+
+        // Handle initial states
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mock module 2 as closed
+            toggleAccordion('module-2');
+        });
+    </script>
+<script src="/stitch/lumora/bridge.js"></script>
+</body></html>

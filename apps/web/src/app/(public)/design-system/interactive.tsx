@@ -41,7 +41,7 @@ export function DesignSystemInteractive() {
   return (
     <>
       <section className="mb-12">
-        <h2 className="mb-4 font-display text-xl font-semibold text-ink-900">Buttons (§2.5)</h2>
+        <h2 className="mb-4 text-xl font-semibold text-ink-900">Buttons (§2.5)</h2>
         <div className="flex flex-wrap items-center gap-3">
           <Button onClick={() => toast('Published', 'live')}>Primary — Publish</Button>
           <Button variant="secondary" onClick={() => toast('Draft saved')}>
@@ -61,7 +61,7 @@ export function DesignSystemInteractive() {
       </section>
 
       <section className="mb-12">
-        <h2 className="mb-4 font-display text-xl font-semibold text-ink-900">
+        <h2 className="mb-4 text-xl font-semibold text-ink-900">
           Data Table with bulk-select (§2.5)
         </h2>
         <DataTable

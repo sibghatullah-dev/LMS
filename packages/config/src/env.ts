@@ -64,6 +64,9 @@ export const envSchema = z.object({
   MS_TEAMS_CLIENT_ID: z.string().optional().default(''),
   MS_TEAMS_CLIENT_SECRET: z.string().optional().default(''),
   MS_TEAMS_TENANT_ID: z.string().optional().default(''),
+  MS_TEAMS_ORGANIZER_USER_ID: z.string().optional().default(''),
+  MEDIA_SERVICE_URL: z.string().url().default('http://localhost:3010'),
+  MEDIA_SERVICE_PORT: z.coerce.number().int().positive().default(3010),
 });
 
 export type Env = z.infer<typeof envSchema>;

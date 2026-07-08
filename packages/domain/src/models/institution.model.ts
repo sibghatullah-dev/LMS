@@ -20,7 +20,7 @@ const institutionSchema = new Schema(
       primaryColor: { type: String },
     },
     featureFlags: {
-      nativeLiveClassroom: { type: Boolean, default: false },
+      nativeLiveClassroom: { type: Boolean, default: true },
       zoomIntegration: { type: Boolean, default: false },
       teamsIntegration: { type: Boolean, default: false },
       alumniPortal: { type: Boolean, default: true },

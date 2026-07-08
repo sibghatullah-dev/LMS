@@ -34,11 +34,11 @@ export default function VerifyCertificatePage() {
 
   return (
     <main className="min-h-screen bg-paper-50 px-6 py-10">
-      <section className="mx-auto max-w-2xl rounded-card border border-neutral-200 bg-surface-0 p-8">
-        <Link href="/" className="font-display text-lg font-bold text-ink-900">
+      <section className="mx-auto max-w-2xl rounded-lg border border-neutral-200 bg-surface-0 p-8">
+        <Link href="/" className="text-lg font-bold text-ink-900">
           Lumora
         </Link>
-        <h1 className="mt-6 font-display text-2xl font-semibold text-ink-900">
+        <h1 className="mt-6 text-2xl font-semibold text-ink-900">
           Certificate verification
         </h1>
         {error ? (

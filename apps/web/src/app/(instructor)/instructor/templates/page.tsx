@@ -34,23 +34,28 @@ export default function TemplatesPage() {
 
   return (
     <AppShell allow={['instructor', 'admin', 'super_admin']}>
-      <main className="mx-auto max-w-content px-6 py-10">
-        <h1 className="mb-2 font-display text-2xl font-semibold text-ink-900">Templates</h1>
+      <main className="mx-auto max-w-content px-4 py-6 sm:px-6">
+        <p className="text-caption font-semibold uppercase text-neutral-500">Reusable course assets</p>
+        <h1 className="mb-2 text-2xl font-semibold text-ink-900">Templates</h1>
         <p className="mb-6 text-sm text-neutral-600">
           Reusable course blueprints. Instantiate one into a fresh draft for a new cohort.
         </p>
         {loading ? (
-          <p className="text-neutral-600">Loading…</p>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {[0, 1, 2].map((item) => (
+              <div key={item} className="h-36 animate-pulse rounded-lg border border-neutral-200 bg-surface-0" />
+            ))}
+          </div>
         ) : templates.length === 0 ? (
-          <p className="text-neutral-600">
+          <p className="rounded-lg border border-neutral-200 bg-surface-0 p-5 text-neutral-600">
             No templates yet. In the course builder, use “Save as template” to create one.
           </p>
         ) : (
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {templates.map((t) => (
-              <li key={t.id} className="rounded-card border border-neutral-200 bg-surface-0 p-5">
-                <h2 className="mb-1 font-display text-lg font-semibold text-ink-900">{t.title}</h2>
-                <p className="mb-4 font-mono text-caption tabular-nums text-neutral-600">
+              <li key={t.id} className="rounded-lg border border-neutral-200 bg-surface-0 p-5">
+                <h2 className="mb-1 text-lg font-semibold text-ink-900">{t.title}</h2>
+                <p className="mb-4 text-caption font-semibold uppercase text-neutral-500">
                   {t.moduleCount} modules · {t.lessonCount} lessons
                 </p>
                 <Button size="sm" onClick={() => instantiateTemplate(t.id)}>

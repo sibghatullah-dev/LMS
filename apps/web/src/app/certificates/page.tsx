@@ -29,13 +29,14 @@ export default function CertificatesPage() {
 
   return (
     <AppShell allow={['student', 'instructor', 'admin', 'super_admin', 'alumnus']}>
-      <main className="mx-auto max-w-content px-6 py-8">
-        <div className="mb-6">
-          <h1 className="font-display text-2xl font-semibold text-ink-900">Certificates</h1>
+      <main className="mx-auto max-w-content px-4 py-6 sm:px-6">
+        <div className="mb-5">
+          <p className="text-caption font-semibold uppercase text-neutral-500">Credential record</p>
+          <h1 className="text-2xl font-semibold text-ink-900">Certificates</h1>
           <p className="text-sm text-neutral-600">Download certificates and share verification codes.</p>
         </div>
         {!certificates ? (
-          <p className="text-neutral-600">Loading…</p>
+          <div className="h-72 animate-pulse rounded-lg border border-neutral-200 bg-surface-0" />
         ) : (
           <DataTable
             rows={certificates}
@@ -59,12 +60,12 @@ export default function CertificatesPage() {
                 header: '',
                 cell: (row) => (
                   <div className="flex gap-3">
-                    <a href={row.downloadUrl} className="text-sm font-medium text-ink-900 underline">
+                    <a href={row.downloadUrl} className="text-sm font-semibold text-ink-900 underline">
                       Download
                     </a>
                     <a
                       href={`/certificates/verify/${row.verificationCode}`}
-                      className="text-sm font-medium text-ink-900 underline"
+                      className="text-sm font-semibold text-ink-900 underline"
                     >
                       Verify
                     </a>

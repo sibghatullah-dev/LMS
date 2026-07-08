@@ -7,6 +7,7 @@ import { UserModel } from '../models/user.model';
 import { ForbiddenError, NotFoundError } from '../errors';
 import { hasAnyRole, type AuthContext } from '../rbac/roles';
 import { notifyUser } from './notification.service';
+import { awardCourseCompletion } from './gamification.service';
 
 const { Types } = mongoose;
 
@@ -66,6 +67,8 @@ export async function issueCertificateIfEligible(studentId: string, courseId: st
     enrollment.completedAt = certificate.issuedAt;
     await enrollment.save();
   }
+
+  await awardCourseCompletion(studentId, courseId);
 
   await notifyUser({
     institutionId: String(course.institutionId),

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumora Live Classroom</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Load Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffffff",
+                    "outline": "#76777d",
+                    "on-surface": "#0d1c2d",
+                    "surface-container-high": "#dbe9ff",
+                    "on-tertiary-container": "#808488",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#eef4ff",
+                    "on-surface-variant": "#45464d",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "inverse-primary": "#bec6e0",
+                    "primary-fixed": "#dae2fd",
+                    "secondary-container": "#d0e1fb",
+                    "surface-bright": "#f8f9ff",
+                    "outline-variant": "#c6c6cd",
+                    "background": "#f8f9ff",
+                    "tertiary-fixed-dim": "#c3c7cb",
+                    "surface-container": "#e5efff",
+                    "surface-dim": "#ccdbf2",
+                    "secondary": "#505f76",
+                    "on-secondary-container": "#54647a",
+                    "on-background": "#0d1c2d",
+                    "surface-tint": "#565e74",
+                    "inverse-on-surface": "#e9f1ff",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "surface": "#f8f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#dfe3e7",
+                    "primary-container": "#131b2e",
+                    "primary": "#000000",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-error-container": "#93000a",
+                    "on-primary-container": "#7c839b",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#d4e4fa",
+                    "inverse-surface": "#233143",
+                    "tertiary": "#000000",
+                    "on-secondary-fixed": "#0b1c30",
+                    "on-tertiary-fixed": "#171c1f",
+                    "surface-container-highest": "#d4e4fa",
+                    "on-primary-fixed": "#131b2e",
+                    "on-tertiary-fixed-variant": "#43474b",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#171c1f",
+                    "secondary-fixed": "#d3e4fe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sidebar-width": "240px",
+                    "lg": "24px",
+                    "sidebar-collapsed": "64px",
+                    "md": "16px",
+                    "container-max": "1440px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "xs": "4px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "display": ["Inter"],
+                    "h2": ["Inter"],
+                    "h1": ["Inter"],
+                    "h3": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "display": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+            color: #0d1c2d;
+            overflow: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .theater-shadow {
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .recording-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .4; }
+        }
+        .whiteboard-grid {
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+<!-- Top App Bar (Shared Component Logic) -->
+<header class="flex justify-between items-center w-full px-lg h-16 bg-surface border-b border-outline-variant z-50">
+<div class="flex items-center gap-md">
+<div class="bg-primary text-on-primary w-8 h-8 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">school</span>
+</div>
+<div>
+<h1 class="font-h3 text-h3 text-on-surface">Advanced Macroeconomics: Market Dynamics</h1>
+<p class="font-label-sm text-label-sm text-secondary">Section A • Prof. Elena Richardson</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="flex items-center gap-xs px-sm py-xs bg-error-container text-error rounded-lg">
+<span class="material-symbols-outlined text-[14px] recording-pulse">fiber_manual_record</span>
+<span class="font-label-md text-label-md uppercase tracking-wider">REC</span>
+<span class="font-label-md text-label-md ml-xs">01:24:05</span>
+</div>
+<button class="flex items-center gap-xs px-md py-sm hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">closed_caption</span>
+<span class="font-label-md text-label-md">Captions</span>
+</button>
+<button class="p-sm hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<main class="flex-1 flex overflow-hidden">
+<!-- Main Content Canvas (Theater UI) -->
+<div class="flex-1 flex flex-col p-md bg-surface-container-low relative">
+<!-- Stage / Content Area -->
+<div class="flex-1 bg-primary-container rounded-xl theater-shadow overflow-hidden relative flex items-center justify-center" id="content-stage">
+<!-- Main Video Stream -->
+<div class="absolute inset-0 w-full h-full" id="video-stream">
+<img class="w-full h-full object-cover opacity-90" data-alt="A professional live stream view of a female professor in a modern university office. She is speaking directly to the camera with soft warm lighting. In the background, a bookshelf and a minimalist whiteboard are visible. The aesthetic is clean, academic, and high-definition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9e7BRdyPv-lFoTtC5vNSrUojBSVyA_meCggDV7F0V9yxxfFj16sdQ-KdpI8PskcB5pZllimr4N5K-0el4cxPj7mvHgnjBIGG5-tELZeHt1B0OjMNahEiPNPXPqudgBTtFxTEWlIwaI9okB81XeYMeq6KQsKhbahDCSZm9bCanM_n4OtgY3LkqJekeHadah_FwTpDbNCwlZn6TMdAXbZ5ymN3IWFQ-e5DWULoar5InmthNwvLUiDoV1vZNhhy-pC9vp-qVQCT3yfbh"/>
+<div class="absolute bottom-md left-md bg-black/40 backdrop-blur-md px-sm py-xs rounded flex items-center gap-sm border border-white/10">
+<span class="material-symbols-outlined text-white text-[18px]">account_circle</span>
+<span class="text-white font-label-md">Prof. Elena Richardson (Host)</span>
+</div>
+</div>
+<!-- Whiteboard Overlay (Hidden by default) -->
+<div class="hidden absolute inset-0 bg-white whiteboard-grid flex flex-col p-lg" id="whiteboard">
+<div class="flex justify-between items-center mb-md">
+<span class="font-h3 text-h3 text-on-surface">Collaborative Canvas</span>
+<div class="flex gap-sm">
+<button class="p-xs hover:bg-slate-100 rounded border border-slate-200"><span class="material-symbols-outlined">draw</span></button>
+<button class="p-xs hover:bg-slate-100 rounded border border-slate-200"><span class="material-symbols-outlined">format_shapes</span></button>
+<button class="p-xs hover:bg-slate-100 rounded border border-slate-200"><span class="material-symbols-outlined">undo</span></button>
+</div>
+</div>
+<div class="flex-1 border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center text-slate-400 italic font-body-sm">
+                        Whiteboard content will appear here...
+                    </div>
+</div>
+<!-- Participant PiP -->
+<div class="absolute top-md right-md flex flex-col gap-sm">
+<div class="w-48 aspect-video bg-slate-900 rounded-lg border border-white/20 overflow-hidden shadow-xl">
+<img class="w-full h-full object-cover" data-alt="A small profile view of a student attending a remote class, sitting in a bright room with a laptop. The lighting is natural and the style is consistent with high-end video conferencing interfaces. Minimalist and focused environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEp2R4lpLTFroKqM43ctHwPHIme6SXrGyuaX3lewmHF7bQ3_2_yT4BLHv2VVcTowXcFSigCI38dgheziOtHY7rWWwwKGRSax7C8S4khVjdQfknxUlV_gBUv_qbSnmCGqxsCT3k5rW0OZ-HUryy-5U1yrxOBOykLCvDvg-5vb6UD3fAo6Cu2XFlmOHpO9kfAAZ0Fb-hPN3N0NoZNG7mu_36GJwz84Frym4U2bILlEUN5TIYMuMhYMLeMJdyA53KEfkpNtHslMAG-hdK"/>
+<div class="absolute bottom-1 left-1 bg-black/60 px-1 rounded text-[10px] text-white">You</div>
+</div>
+</div>
+<!-- Floating Tool Toggle -->
+<div class="absolute bottom-md left-1/2 -translate-x-1/2 flex items-center gap-md bg-black/30 backdrop-blur-xl px-md py-sm rounded-full border border-white/10">
+<button class="flex items-center gap-xs px-md py-xs rounded-full bg-white text-primary font-label-md transition-all shadow-lg" id="btn-video" onclick="toggleView('video')">
+<span class="material-symbols-outlined text-[20px]">videocam</span>
+                        Stage
+                    </button>
+<button class="flex items-center gap-xs px-md py-xs rounded-full text-white hover:bg-white/10 font-label-md transition-all" id="btn-whiteboard" onclick="toggleView('whiteboard')">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+                        Whiteboard
+                    </button>
+</div>
+</div>
+<!-- Bottom Toolbar -->
+<div class="mt-md flex justify-between items-center bg-white p-sm rounded-xl border border-outline-variant shadow-sm">
+<div class="flex items-center gap-sm">
+<button class="w-12 h-12 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container transition-colors text-primary">
+<span class="material-symbols-outlined">mic</span>
+<span class="font-label-sm text-[9px] mt-1">Mute</span>
+</button>
+<button class="w-12 h-12 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container transition-colors text-primary">
+<span class="material-symbols-outlined">videocam</span>
+<span class="font-label-sm text-[9px] mt-1">Stop Video</span>
+</button>
+<div class="w-px h-8 bg-outline-variant mx-xs"></div>
+<button class="px-md h-12 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container transition-colors text-primary">
+<span class="material-symbols-outlined">present_to_all</span>
+<span class="font-label-sm text-[9px] mt-1">Share Screen</span>
+</button>
+<button class="px-md h-12 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container transition-colors text-primary relative">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-[9px] mt-1">Participants (32)</span>
+</button>
+<button class="px-md h-12 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container transition-colors text-primary">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-label-sm text-[9px] mt-1">Breakout</span>
+</button>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm hover:bg-surface-container rounded-lg text-secondary">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+<button class="bg-error text-on-error px-lg h-10 rounded-lg font-label-md hover:bg-red-700 transition-colors shadow-md">
+                        End Session
+                    </button>
+</div>
+</div>
+</div>
+<!-- Right Sidebar (Tabs: Chat & Polls) -->
+<aside class="w-[320px] bg-surface flex flex-col border-l border-outline-variant">
+<!-- Tabs -->
+<div class="flex border-b border-outline-variant">
+<button class="flex-1 py-md font-label-md border-b-2 border-primary text-primary transition-all" id="tab-chat" onclick="switchTab('chat')">Chat</button>
+<button class="flex-1 py-md font-label-md border-b-2 border-transparent text-secondary hover:text-primary transition-all" id="tab-polls" onclick="switchTab('polls')">Polls</button>
+</div>
+<!-- Chat Content -->
+<div class="flex-1 flex flex-col overflow-hidden" id="panel-chat">
+<div class="flex-1 overflow-y-auto p-md space-y-md custom-scrollbar" id="chat-feed">
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between items-baseline">
+<span class="font-label-md text-primary">Sarah Miller</span>
+<span class="text-[10px] text-outline">10:42 AM</span>
+</div>
+<div class="bg-surface-container-low p-sm rounded-lg rounded-tl-none font-body-sm text-on-surface">
+                            Could you explain the elasticity curve once more?
+                        </div>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between items-baseline">
+<span class="font-label-md text-primary">David Chen</span>
+<span class="text-[10px] text-outline">10:44 AM</span>
+</div>
+<div class="bg-surface-container-low p-sm rounded-lg rounded-tl-none font-body-sm text-on-surface">
+                            I think it relates to the demand shift we discussed last week.
+                        </div>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between items-baseline">
+<span class="font-label-md text-on-primary-fixed-variant">Professor Richardson</span>
+<span class="text-[10px] text-outline">10:45 AM</span>
+</div>
+<div class="bg-primary-container text-white p-sm rounded-lg rounded-tl-none font-body-sm">
+                            Good point David! I'll pull up the visual on the whiteboard now.
+                        </div>
+</div>
+</div>
+<!-- Chat Input -->
+<div class="p-md bg-surface border-t border-outline-variant">
+<div class="relative">
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-sm text-body-sm focus:ring-1 focus:ring-primary focus:border-primary resize-none h-20 custom-scrollbar" placeholder="Type a message..."></textarea>
+<div class="absolute bottom-2 right-2 flex gap-xs">
+<button class="p-1 text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">mood</span>
+</button>
+<button class="p-1 text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Polls Content (Hidden) -->
+<div class="hidden flex-1 p-md flex flex-col gap-lg overflow-y-auto custom-scrollbar" id="panel-polls">
+<div class="p-md border border-outline-variant rounded-xl bg-surface-container-lowest shadow-sm">
+<div class="flex justify-between items-start mb-md">
+<span class="px-sm py-xs bg-success-container text-[10px] font-bold text-green-700 bg-green-100 rounded uppercase">Active</span>
+<span class="text-[10px] text-outline">Poll #1</span>
+</div>
+<h4 class="font-h3 text-on-surface text-[14px] mb-md">Which market structure has the highest barrier to entry?</h4>
+<div class="space-y-sm">
+<button class="w-full p-sm border border-outline-variant rounded-lg text-left text-body-sm hover:border-primary hover:bg-surface-container transition-all flex justify-between items-center group">
+                            Perfect Competition
+                            <span class="text-outline group-hover:text-primary">12%</span>
+</button>
+<button class="w-full p-sm border border-outline-variant rounded-lg text-left text-body-sm hover:border-primary hover:bg-surface-container transition-all flex justify-between items-center group">
+                            Monopolistic Competition
+                            <span class="text-outline group-hover:text-primary">5%</span>
+</button>
+<button class="w-full p-sm border-2 border-primary bg-surface-container rounded-lg text-left text-body-sm flex justify-between items-center font-semibold">
+                            Monopoly
+                            <span class="text-primary">83%</span>
+</button>
+</div>
+</div>
+<button class="w-full border-2 border-dashed border-outline-variant p-md rounded-xl text-secondary font-label-md flex items-center justify-center gap-sm hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+                    Create New Poll
+                </button>
+</div>
+</aside>
+</main>
+<script>
+        function toggleView(view) {
+            const video = document.getElementById('video-stream');
+            const whiteboard = document.getElementById('whiteboard');
+            const btnVideo = document.getElementById('btn-video');
+            const btnWhiteboard = document.getElementById('btn-whiteboard');
+
+            if (view === 'whiteboard') {
+                video.classList.add('opacity-0', 'pointer-events-none');
+                whiteboard.classList.remove('hidden');
+                btnWhiteboard.classList.add('bg-white', 'text-primary', 'shadow-lg');
+                btnWhiteboard.classList.remove('text-white', 'hover:bg-white/10');
+                btnVideo.classList.remove('bg-white', 'text-primary', 'shadow-lg');
+                btnVideo.classList.add('text-white', 'hover:bg-white/10');
+            } else {
+                video.classList.remove('opacity-0', 'pointer-events-none');
+                whiteboard.classList.add('hidden');
+                btnVideo.classList.add('bg-white', 'text-primary', 'shadow-lg');
+                btnVideo.classList.remove('text-white', 'hover:bg-white/10');
+                btnWhiteboard.classList.remove('bg-white', 'text-primary', 'shadow-lg');
+                btnWhiteboard.classList.add('text-white', 'hover:bg-white/10');
+            }
+        }
+
+        function switchTab(tab) {
+            const chatPanel = document.getElementById('panel-chat');
+            const pollsPanel = document.getElementById('panel-polls');
+            const chatBtn = document.getElementById('tab-chat');
+            const pollsBtn = document.getElementById('tab-polls');
+
+            if (tab === 'chat') {
+                chatPanel.classList.remove('hidden');
+                pollsPanel.classList.add('hidden');
+                chatBtn.classList.add('border-primary', 'text-primary');
+                chatBtn.classList.remove('border-transparent', 'text-secondary');
+                pollsBtn.classList.remove('border-primary', 'text-primary');
+                pollsBtn.classList.add('border-transparent', 'text-secondary');
+            } else {
+                chatPanel.classList.add('hidden');
+                pollsPanel.classList.remove('hidden');
+                pollsBtn.classList.add('border-primary', 'text-primary');
+                pollsBtn.classList.remove('border-transparent', 'text-secondary');
+                chatBtn.classList.remove('border-primary', 'text-primary');
+                chatBtn.classList.add('border-transparent', 'text-secondary');
+            }
+        }
+
+        // Auto-scroll chat to bottom
+        const chatFeed = document.getElementById('chat-feed');
+        chatFeed.scrollTop = chatFeed.scrollHeight;
+    </script>
+<script src="/stitch/lumora/bridge.js"></script>
+</body></html>

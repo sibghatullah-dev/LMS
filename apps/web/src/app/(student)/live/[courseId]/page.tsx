@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { AppShell } from '@/components/app-shell';
 import { Button, DataTable, StatusChip, toneForStatus, type Column } from '@/components/ui';
 import { useAuthStore } from '@/lib/auth-store';
@@ -10,6 +10,7 @@ import type { LiveSession } from '@/lib/course-types';
 
 export default function StudentLiveSessionsPage() {
   const params = useParams<{ courseId: string }>();
+  const router = useRouter();
   const authedFetch = useAuthStore((s) => s.authedFetch);
   const [sessions, setSessions] = useState<LiveSession[]>([]);
   const [joiningId, setJoiningId] = useState<string | null>(null);
@@ -38,7 +39,7 @@ export default function StudentLiveSessionsPage() {
       if (data.joinUrl) {
         window.open(data.joinUrl, '_blank', 'noopener,noreferrer');
       } else {
-        setError('Native classroom tokens are ready, but the media classroom UI is not enabled yet.');
+        router.push(`/live/session/${session.id}`);
       }
     } catch (e) {
       setError((e as { message?: string }).message ?? 'Could not join session.');
@@ -77,12 +78,13 @@ export default function StudentLiveSessionsPage() {
 
   return (
     <AppShell allow={['student', 'alumnus', 'instructor', 'admin', 'super_admin']}>
-      <main className="mx-auto max-w-content px-6 py-8">
-        <Link href={`/learn/${params.courseId}`} className="text-sm text-neutral-600">
+      <main className="mx-auto max-w-content px-4 py-6 sm:px-6">
+        <Link href={`/learn/${params.courseId}`} className="text-sm font-semibold text-neutral-600">
           Back to course
         </Link>
-        <div className="mb-6 mt-2">
-          <h1 className="font-display text-2xl font-semibold text-ink-900">Live sessions</h1>
+        <div className="mb-5 mt-2">
+          <p className="text-caption font-semibold uppercase text-neutral-500">Classroom schedule</p>
+          <h1 className="text-2xl font-semibold text-ink-900">Live sessions</h1>
           <p className="text-sm text-neutral-600">Upcoming and past classroom sessions for this course.</p>
         </div>
         {error && <p className="mb-4 text-sm text-accent-alert">{error}</p>}

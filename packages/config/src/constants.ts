@@ -38,6 +38,7 @@ export type AuthProvider = (typeof AUTH_PROVIDERS)[number];
 /** Notification lead times (FR-NOTIFY-02/03), in minutes. */
 export const DEADLINE_REMINDER_LEAD_MIN = 24 * 60; // 24h default
 export const SESSION_REMINDER_LEADS_MIN = [15, 24 * 60]; // 15 min + 1 day
+export const EVENT_REMINDER_LEADS_MIN = [24 * 60]; // 1 day before event start
 
 /** Course lifecycle status (DDD §3.3). Reject returns a course to `draft` (UC-03). */
 export const COURSE_STATUSES = [
@@ -98,6 +99,9 @@ export const NOTIFICATION_TYPES = [
   'enrollment_status',
   'course_review',
   'announcement',
+  'forum_reply',
+  'direct_message',
+  'event_reminder',
   'deadline_reminder',
   'live_session_reminder',
 ] as const;

@@ -103,7 +103,7 @@ export default function AttendancePage() {
           Back to courses
         </Link>
         <div className="mb-6 mt-2">
-          <h1 className="font-display text-2xl font-semibold text-ink-900">Attendance</h1>
+          <h1 className="text-2xl font-semibold text-ink-900">Attendance</h1>
           <p className="text-sm text-neutral-600">Manual overrides are written to the audit log.</p>
         </div>
         <div className="mb-4 max-w-xl">

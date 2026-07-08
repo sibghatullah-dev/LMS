@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notification Center - Lumora LMS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c6c6cd",
+                        "on-tertiary-fixed": "#171c1f",
+                        "surface": "#f8f9ff",
+                        "inverse-primary": "#bec6e0",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-surface-variant": "#45464d",
+                        "tertiary": "#000000",
+                        "background": "#f8f9ff",
+                        "surface-dim": "#ccdbf2",
+                        "secondary-container": "#d0e1fb",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-background": "#0d1c2d",
+                        "on-primary-fixed": "#131b2e",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#c3c7cb",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-container": "#808488",
+                        "primary": "#000000",
+                        "surface-container-highest": "#d4e4fa",
+                        "outline": "#76777d",
+                        "on-surface": "#0d1c2d",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-primary-container": "#7c839b",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#131b2e",
+                        "on-secondary-fixed": "#0b1c30",
+                        "secondary": "#505f76",
+                        "primary-fixed-dim": "#bec6e0",
+                        "tertiary-container": "#171c1f",
+                        "surface-tint": "#565e74",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#233143",
+                        "inverse-on-surface": "#e9f1ff",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#dae2fd",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-tertiary-fixed-variant": "#43474b",
+                        "surface-variant": "#d4e4fa",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#dfe3e7",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "base": "4px",
+                        "container-max": "1440px",
+                        "sidebar-width": "240px",
+                        "xs": "4px",
+                        "sidebar-collapsed": "64px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "display": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "h1": ["Inter"],
+                        "h3": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-background min-h-screen">
+<!-- SideNavBar -->
+<aside class="w-sidebar-width h-full fixed left-0 top-0 bg-surface-container-lowest dark:bg-primary-container border-r border-outline-variant dark:border-on-surface-variant flex flex-col py-md px-sm z-50">
+<div class="mb-xl px-md">
+<h2 class="text-h2 font-h2 text-on-background dark:text-surface-bright">Lumora LMS</h2>
+<p class="text-body-sm font-body-sm text-secondary">Academic Portal</p>
+</div>
+<nav class="flex-1 space-y-base">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">school</span>
+<span>Courses</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span>Calendar</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span>Resources</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span>Messaging</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200 ease-in-out font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">event</span>
+<span>Events</span>
+</a>
+<a class="bg-surface-container dark:bg-secondary-container text-on-surface dark:text-on-secondary-container border-l-2 border-primary flex items-center gap-md px-md py-sm rounded-lg transition-colors duration-200 ease-in-out font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span>Notifications</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-md px-md flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a diverse male academic in a well-lit modern office setting. He is smiling warmly at the camera, wearing a clean, dark charcoal sweater over a crisp white shirt. The background is softly blurred, showing books and a laptop on a minimalist desk, adhering to a clean, light-mode corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3KAxmBdmqlPnzJZNq9hfANerD0Of2kn-PjZx2bD3jCvzrXG3TrFQRXimXEt4rTKPcz3uqWwae4uKTOVjHJci0oNNeTXUh7COG3czargpOvhW1JRa8-54oAYsHH3uJdVe0MnGCi0kN0O-ZtKx80RzqrOut1DtnOvoNVnLKNgT40BYvvkruL549q6TZQTWRBYrrI_v9a7UKt28FHxtjzsgI_jOF-vdLrbIoV53qH8LgpzYf5LqxGKjgWYxgqdb1WPflPArajPe6BM7P"/>
+<div class="flex-1 overflow-hidden">
+<p class="font-label-md text-label-md truncate">Dr. Aris Thorne</p>
+<p class="font-label-sm text-label-sm text-secondary truncate">Faculty Head</p>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-240px)] h-16 bg-surface dark:bg-background border-b border-outline-variant dark:border-on-surface-variant flex justify-between items-center px-lg h-16 z-40">
+<div class="flex items-center gap-md w-1/2">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-secondary">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-xl pr-md py-xs text-body-sm focus:ring-1 focus:ring-primary" placeholder="Search notifications..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="text-secondary hover:bg-surface-container-low p-xs rounded-full transition-all cursor-pointer">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="text-secondary hover:bg-surface-container-low p-xs rounded-full transition-all cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] pt-24 pb-12 px-lg min-h-screen">
+<div class="max-w-4xl mx-auto">
+<!-- Header & Filter Row -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md mb-xl">
+<div>
+<h1 class="font-h1 text-h1 text-on-background mb-base">Notifications</h1>
+<p class="font-body-sm text-body-sm text-secondary">Stay updated with your latest academic activities and system alerts.</p>
+</div>
+<div class="flex items-center gap-sm">
+<button class="bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md flex items-center gap-xs hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+                        Mark all as read
+                    </button>
+<div class="relative group">
+<button class="bg-surface-container-low border border-outline-variant px-md py-sm rounded-lg font-label-md text-label-md flex items-center gap-xs text-secondary hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                            Filter
+                        </button>
+</div>
+</div>
+</div>
+<!-- Filter Tabs -->
+<div class="flex gap-sm mb-lg overflow-x-auto no-scrollbar">
+<button class="bg-primary text-on-primary px-lg py-xs rounded-full font-label-md text-label-md whitespace-nowrap">All</button>
+<button class="bg-surface-container-low text-secondary px-lg py-xs rounded-full font-label-md text-label-md whitespace-nowrap hover:bg-surface-container-high transition-colors">Courses</button>
+<button class="bg-surface-container-low text-secondary px-lg py-xs rounded-full font-label-md text-label-md whitespace-nowrap hover:bg-surface-container-high transition-colors">Messages</button>
+<button class="bg-surface-container-low text-secondary px-lg py-xs rounded-full font-label-md text-label-md whitespace-nowrap hover:bg-surface-container-high transition-colors">Assignments</button>
+<button class="bg-surface-container-low text-secondary px-lg py-xs rounded-full font-label-md text-label-md whitespace-nowrap hover:bg-surface-container-high transition-colors">System</button>
+</div>
+<!-- Notifications List -->
+<div class="space-y-xl">
+<!-- Today Section -->
+<section>
+<div class="flex items-center gap-md mb-md">
+<h3 class="font-h3 text-h3">Today</h3>
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+</div>
+<div class="space-y-sm">
+<!-- Notification Item -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md flex gap-md items-start group hover:shadow-sm transition-shadow relative">
+<div class="w-1 absolute left-0 top-4 bottom-4 bg-primary rounded-full"></div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined">assignment_turned_in</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-on-background">Grade posted: Macroeconomics 101</h4>
+<span class="font-label-sm text-label-sm text-secondary">2 hours ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Your final grade for 'Global Markets' has been reviewed and published by Professor Miller.</p>
+<div class="mt-sm flex gap-sm">
+<button class="text-primary font-label-md text-label-md hover:underline">View Results</button>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-secondary hover:text-on-surface transition-opacity p-xs">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md flex gap-md items-start group hover:shadow-sm transition-shadow relative">
+<div class="w-1 absolute left-0 top-4 bottom-4 bg-primary rounded-full"></div>
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0">
+<span class="material-symbols-outlined">chat_bubble</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-on-background">New message from Sarah Jenkins</h4>
+<span class="font-label-sm text-label-sm text-secondary">5 hours ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">"Hey Aris, could you take a look at the curriculum updates I sent over earlier?"</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-secondary hover:text-on-surface transition-opacity p-xs">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Yesterday Section -->
+<section>
+<div class="flex items-center gap-md mb-md">
+<h3 class="font-h3 text-h3 text-secondary">Yesterday</h3>
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+</div>
+<div class="space-y-sm">
+<div class="bg-surface-container-low/50 border border-outline-variant/60 rounded-lg p-md flex gap-md items-start group transition-all">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-secondary flex-shrink-0">
+<span class="material-symbols-outlined">event</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-secondary">Upcoming Event: Faculty Meeting</h4>
+<span class="font-label-sm text-label-sm text-secondary">Yesterday, 4:15 PM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70 mt-xs">A new faculty sync session has been added to your calendar for next Tuesday.</p>
+</div>
+</div>
+<div class="bg-surface-container-low/50 border border-outline-variant/60 rounded-lg p-md flex gap-md items-start group transition-all">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-secondary flex-shrink-0">
+<span class="material-symbols-outlined">school</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-secondary">Course Update: Advanced Pedagogy</h4>
+<span class="font-label-sm text-label-sm text-secondary">Yesterday, 9:00 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70 mt-xs">The syllabus for the upcoming semester has been updated with new reading materials.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Older Section -->
+<section>
+<div class="flex items-center gap-md mb-md">
+<h3 class="font-h3 text-h3 text-secondary">Older</h3>
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+</div>
+<div class="space-y-sm opacity-80 hover:opacity-100 transition-opacity">
+<div class="bg-surface-container-low/50 border border-outline-variant/60 rounded-lg p-md flex gap-md items-start group">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-on-error-container flex-shrink-0">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-secondary">Security Alert: New Login</h4>
+<span class="font-label-sm text-label-sm text-secondary">Oct 24, 2023</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70 mt-xs">A new login was detected from a Chrome browser on Windows in Seattle, WA.</p>
+<button class="mt-sm text-error font-label-md text-label-md hover:underline">This wasn't me</button>
+</div>
+</div>
+<div class="bg-surface-container-low/50 border border-outline-variant/60 rounded-lg p-md flex gap-md items-start group">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-secondary flex-shrink-0">
+<span class="material-symbols-outlined">settings</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-secondary">System Maintenance Scheduled</h4>
+<span class="font-label-sm text-label-sm text-secondary">Oct 22, 2023</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70 mt-xs">Lumora LMS will be offline for scheduled maintenance this Sunday from 2 AM to 4 AM EST.</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Empty State Illustration Placeholder (Hidden by default) -->
+<div class="hidden flex flex-col items-center justify-center py-xl text-center" id="empty-state">
+<div class="w-64 h-64 mb-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-outline-variant text-[120px]">notifications_off</span>
+</div>
+<h2 class="font-h2 text-h2 text-on-background">All caught up!</h2>
+<p class="font-body-md text-body-md text-secondary mt-sm max-w-sm">You have no new notifications. Check back later for updates on your courses and messages.</p>
+</div>
+<!-- Footer Pagination/Load More -->
+<div class="mt-xl text-center">
+<button class="text-primary font-label-md text-label-md px-xl py-sm rounded-lg hover:bg-surface-container transition-colors">
+                    Load previous notifications
+                </button>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('.group').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.transform = 'translateY(-2px)';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'translateY(0px)';
+            });
+        });
+
+        // Simple filtering simulation
+        const filterButtons = document.querySelectorAll('.whitespace-nowrap');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-primary', 'text-on-primary');
+                    b.classList.add('bg-surface-container-low', 'text-secondary');
+                });
+                btn.classList.add('bg-primary', 'text-on-primary');
+                btn.classList.remove('bg-surface-container-low', 'text-secondary');
+            });
+        });
+    </script>
+<script src="/stitch/lumora/bridge.js"></script>
+</body></html>

@@ -60,16 +60,15 @@ export default function RosterPage() {
 
   return (
     <AppShell allow={['instructor', 'admin', 'super_admin']}>
-      <main className="mx-auto max-w-content px-6 py-10">
-        <Link href={`/instructor/courses/${params.courseId}`} className="text-sm text-neutral-600">
-          ← Back to builder
+      <main className="mx-auto max-w-content px-4 py-6 sm:px-6">
+        <Link href={`/instructor/courses/${params.courseId}`} className="text-sm font-semibold text-neutral-600">
+          Back to builder
         </Link>
-        <h1 className="mb-6 mt-2 font-display text-2xl font-semibold text-ink-900">
-          Roster &amp; Attendance
-        </h1>
+        <p className="mt-2 text-caption font-semibold uppercase text-neutral-500">Enrollment operations</p>
+        <h1 className="mb-5 text-2xl font-semibold text-ink-900">Roster &amp; Attendance</h1>
 
-        <section className="mb-8 rounded-card border border-neutral-200 bg-surface-0 p-5">
-          <h2 className="mb-2 font-display text-lg font-semibold text-ink-900">Bulk enroll</h2>
+        <section className="mb-5 rounded-lg border border-neutral-200 bg-surface-0 p-5">
+          <h2 className="mb-2 text-lg font-semibold text-ink-900">Bulk enroll</h2>
           <p className="mb-3 text-sm text-neutral-600">
             Paste student emails (comma, space, or newline separated).
           </p>
@@ -78,7 +77,7 @@ export default function RosterPage() {
             rows={3}
             value={emails}
             onChange={(e) => setEmails(e.target.value)}
-            className="mb-3 w-full rounded-card border border-neutral-200 p-2 text-sm"
+            className="mb-3 w-full rounded-lg border border-neutral-200 p-2 text-sm"
             placeholder="sara@example.com, james@example.com"
           />
           <Button size="sm" onClick={bulkEnroll} disabled={!emails.trim()}>
@@ -87,15 +86,15 @@ export default function RosterPage() {
         </section>
 
         {pending.length > 0 && (
-          <section className="mb-8">
-            <h2 className="mb-3 font-display text-lg font-semibold text-ink-900">
+          <section className="mb-5">
+            <h2 className="mb-3 text-lg font-semibold text-ink-900">
               Pending approval ({pending.length})
             </h2>
             <ul className="flex flex-col gap-2">
               {pending.map((r) => (
                 <li
                   key={r.id}
-                  className="flex items-center justify-between rounded-card border border-neutral-200 bg-surface-0 p-3"
+                  className="grid gap-3 rounded-lg border border-neutral-200 bg-surface-0 p-3 md:grid-cols-[1fr_auto] md:items-center"
                 >
                   <span className="text-sm text-ink-900">
                     {r.student.fullName} · {r.student.email}
@@ -114,19 +113,19 @@ export default function RosterPage() {
           </section>
         )}
 
-        <h2 className="mb-3 font-display text-lg font-semibold text-ink-900">
+        <h2 className="mb-3 text-lg font-semibold text-ink-900">
           Enrolled ({rows.length})
         </h2>
         {loading ? (
-          <p className="text-neutral-600">Loading…</p>
+          <div className="h-64 animate-pulse rounded-lg border border-neutral-200 bg-surface-0" />
         ) : rows.length === 0 ? (
-          <p className="text-neutral-600">No enrollments yet.</p>
+          <p className="rounded-lg border border-neutral-200 bg-surface-0 p-5 text-neutral-600">No enrollments yet.</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {rows.map((r) => (
               <li
                 key={r.id}
-                className="flex items-center justify-between rounded-card border border-neutral-200 bg-surface-0 p-3"
+                className="grid gap-3 rounded-lg border border-neutral-200 bg-surface-0 p-3 md:grid-cols-[1fr_auto] md:items-center"
               >
                 <span className="text-sm text-ink-900">
                   {r.student.fullName} · {r.student.email}

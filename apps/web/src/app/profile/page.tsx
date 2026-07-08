@@ -85,15 +85,16 @@ export default function ProfilePage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-2xl px-6 py-8">
-        <section className="rounded-card border border-neutral-200 bg-surface-0 p-6 sm:p-8">
-          <h1 className="mb-6 font-display text-2xl font-semibold text-ink-900">{t('profile.title')}</h1>
+      <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6">
+        <section className="rounded-lg border border-neutral-200 bg-surface-0 p-6 sm:p-8">
+          <p className="text-caption font-semibold uppercase text-neutral-500">Account settings</p>
+          <h1 className="mb-6 text-2xl font-semibold text-ink-900">{t('profile.title')}</h1>
           <form onSubmit={onSave} className="flex flex-col gap-4">
             <Field label={t('common.fullName')} name="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
             <Field label={t('common.email')} name="email" value={user.email} disabled />
 
             <fieldset className="flex flex-col gap-2">
-              <legend className="mb-1 text-sm font-medium text-ink-900">
+              <legend className="mb-1 text-sm font-semibold text-ink-900">
                 {t('profile.notifications')}
               </legend>
               {(['email', 'inApp', 'sms'] as const).map((ch) => (
@@ -115,7 +116,7 @@ export default function ProfilePage() {
           </form>
 
           <section className="mt-8 border-t border-neutral-200 pt-5">
-            <h2 className="font-display text-lg font-semibold text-ink-900">Privacy</h2>
+            <h2 className="text-lg font-semibold text-ink-900">Privacy</h2>
             <p className="mt-1 text-sm text-neutral-600">
               Export your account data or deactivate and scrub direct personal details.
             </p>

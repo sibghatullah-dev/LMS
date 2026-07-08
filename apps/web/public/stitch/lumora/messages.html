@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#7c839b",
+                        "on-surface-variant": "#45464d",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#0d1c2d",
+                        "tertiary-container": "#171c1f",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-tertiary-fixed": "#171c1f",
+                        "secondary-container": "#d0e1fb",
+                        "primary-container": "#131b2e",
+                        "primary": "#000000",
+                        "tertiary": "#000000",
+                        "surface-bright": "#f8f9ff",
+                        "surface-variant": "#d4e4fa",
+                        "on-secondary-container": "#54647a",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#43474b",
+                        "tertiary-fixed": "#dfe3e7",
+                        "inverse-on-surface": "#e9f1ff",
+                        "surface-container": "#e5efff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#dbe9ff",
+                        "surface-dim": "#ccdbf2",
+                        "background": "#f8f9ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#565e74",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#233143",
+                        "error-container": "#ffdad6",
+                        "surface": "#f8f9ff",
+                        "on-surface": "#0d1c2d",
+                        "on-secondary-fixed": "#0b1c30",
+                        "tertiary-fixed-dim": "#c3c7cb",
+                        "primary-fixed": "#dae2fd",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c6c6cd",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#bec6e0",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface-container-low": "#eef4ff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#d4e4fa",
+                        "on-tertiary-container": "#808488",
+                        "on-primary-fixed": "#131b2e",
+                        "outline": "#76777d",
+                        "secondary": "#505f76"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "container-max": "1440px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "sidebar-collapsed": "64px",
+                        "xs": "4px",
+                        "sidebar-width": "240px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "h3": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                        "display": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-background overflow-hidden h-screen flex">
+<!-- SideNavBar Component -->
+<aside class="w-sidebar-width h-full fixed left-0 top-0 border-r border-outline-variant bg-surface-container-lowest dark:bg-primary-container z-50 flex flex-col py-md px-sm">
+<div class="mb-xl px-md">
+<h1 class="text-h2 font-h2 text-on-background dark:text-surface-bright">Lumora LMS</h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant opacity-70">Academic Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-md py-sm text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-sm text-body-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-md py-sm text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-body-sm text-body-sm">Courses</span>
+</a>
+<a class="flex items-center gap-3 px-md py-sm text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-body-sm text-body-sm">Calendar</span>
+</a>
+<a class="flex items-center gap-3 px-md py-sm text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-body-sm text-body-sm">Resources</span>
+</a>
+<a class="flex items-center gap-3 px-md py-sm text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body-sm text-body-sm">Reports</span>
+</a>
+<!-- Active State: Messaging -->
+<a class="flex items-center gap-3 px-md py-sm bg-surface-container dark:bg-secondary-container text-on-surface dark:text-on-secondary-container border-l-2 border-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="font-body-sm text-body-sm">Messaging</span>
+</a>
+<a class="flex items-center gap-3 px-md py-sm text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="font-body-sm text-body-sm">Events</span>
+</a>
+<a class="flex items-center gap-3 px-md py-sm text-secondary dark:text-on-secondary-container hover:bg-surface-container-low transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-body-sm text-body-sm">Notifications</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-md px-md">
+<div class="flex items-center gap-3 cursor-pointer hover:bg-surface-container-low p-2 rounded-lg transition-colors">
+<img class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A high-quality professional headshot of a female university student in her early twenties, wearing a smart-casual blazer. The lighting is soft and cinematic, coming from a side window in a modern library setting with blurred bookshelves in the background. The aesthetic is clean, academic, and highly professional with a focus on realism and crisp detail." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhbuJzgqaQ0L5Ez8K8pQljnCvRStIxxiTJX_TL29KZ5dqT1rAv7ZTPw-Nz_Njc8HP0H1oxWz9bSEDo_IMZueqhSx1q9zus725S0MLnWQs7zBUPi2_P7I9cklINB7A8haSznYYP3wmFBmdm_c88aJe-Dze4dmE4QMMSKmllsoS_VRI99GeyQjBBhKZ-hQSr2z47fTU5UVuyehH9aeRqwe_o4UtKlTbd00XV75fSV9SxjCRV1VwS9cLjZyMD78AZlhPt9YC_eo2HS8C8"/>
+<div class="flex-1 overflow-hidden">
+<p class="font-label-md text-label-md text-on-background truncate">Elena Vance</p>
+<p class="font-label-sm text-label-sm text-secondary truncate">Student ID: 44921</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-[240px] flex flex-col h-screen overflow-hidden">
+<!-- TopAppBar Component -->
+<header class="h-16 flex justify-between items-center px-lg border-b border-outline-variant bg-surface dark:bg-background z-40 sticky top-0">
+<div class="flex items-center gap-md flex-1">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 text-body-sm focus:ring-1 focus:ring-primary" placeholder="Search messages..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="w-10 h-10 flex items-center justify-center text-secondary hover:bg-surface-container-low rounded-full transition-all cursor-pointer">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-secondary hover:bg-surface-container-low rounded-full transition-all cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<button class="bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:opacity-80 transition-all">
+<span class="material-symbols-outlined text-[18px]">add_comment</span>
+                    New Message
+                </button>
+</div>
+</header>
+<!-- Messaging Layout -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Conversations List Pane (Left) -->
+<section class="w-[360px] border-r border-outline-variant flex flex-col bg-surface-container-lowest">
+<div class="p-md flex items-center justify-between border-b border-outline-variant">
+<h2 class="font-h3 text-h3">Conversations</h2>
+<div class="flex gap-2">
+<span class="bg-surface-container-high text-on-surface px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Unread (3)</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto">
+<!-- Conversation Item 1: Active -->
+<div class="p-md flex items-start gap-3 bg-surface-container cursor-pointer border-l-4 border-primary">
+<div class="relative flex-shrink-0">
+<img class="w-10 h-10 rounded-full" data-alt="Close up of a senior male professor with grey hair and glasses, looking thoughtful and friendly in a professional academic setting. The background is a soft-focus office with books. Lighting is natural and warm, emphasizing wisdom and approachability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdpvnOZBfEZue9jLO6JVikmusxh2bjJy4Yuh7rqL_6I2w00C2NRO9Hbah62cwhUpzqr3pQlG_5HKwX6LAOGgfeaOL_a0oVUojqDqzZVKhzsEPCaWNGntMPjovk9fWVMe8dFak85bgEwDsliEEgAhkkrdTtgc4_EDTP1AWW03tDof1CJKPGMfkT75M94t9hTyvJLisvazBf4ZpQAKAonPrfUUNGNBEN36zLh-Lex0BARFhSYveAt3E7YnNqVI80DFPtH-Bg1Kc_q0mL"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-surface-container-lowest rounded-full"></span>
+</div>
+<div class="flex-1 overflow-hidden">
+<div class="flex justify-between items-baseline">
+<h3 class="font-label-md text-label-md text-on-surface truncate">Prof. Julian Sterling</h3>
+<span class="text-label-sm text-secondary font-medium">10:45 AM</span>
+</div>
+<p class="text-body-sm text-on-surface font-semibold truncate">I've reviewed your thesis proposal draft...</p>
+</div>
+</div>
+<!-- Conversation Item 2 -->
+<div class="p-md flex items-start gap-3 hover:bg-surface-container-low transition-colors cursor-pointer border-l-4 border-transparent">
+<div class="relative flex-shrink-0">
+<img class="w-10 h-10 rounded-full" data-alt="A young man with curly hair and a creative casual style, wearing a denim shirt. He is smiling in a bright, modern studio environment. High-key lighting, vibrant but minimalist background, reflecting a creative student persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGeWo8-LPMv5JGEbC2U_UXddfycGhB5DKlpyn1NgKZFZWtsnTDrbwfsyNM1iZIIU5rNpgPkcFoKKHCo6LrAknq9MqRznnWkwH45Kgv7heaYFznw0dSQ9bLhIhPiliPQlTVL5XOgfuKew-QbxWVeyE1_EvCVakizizE8F08yorOQFINC7Vcbwsk4LFbBJ2_qb_h1MSi_VPoZ6q_x_zSELb-Lvk5UFk7TXBPByNrX-wOzyi7bbJ7M2VygfNKeP8_GAVkKXm0dUuIW2-C"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 bg-outline border-2 border-surface-container-lowest rounded-full"></span>
+</div>
+<div class="flex-1 overflow-hidden">
+<div class="flex justify-between items-baseline">
+<h3 class="font-label-md text-label-md text-on-surface truncate">Marcus Chen</h3>
+<span class="text-label-sm text-secondary">Yesterday</span>
+</div>
+<p class="text-body-sm text-secondary truncate">Are we still meeting at the library for the group project?</p>
+</div>
+<div class="bg-primary text-on-primary w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">2</div>
+</div>
+<!-- Conversation Item 3 -->
+<div class="p-md flex items-start gap-3 hover:bg-surface-container-low transition-colors cursor-pointer border-l-4 border-transparent">
+<div class="relative flex-shrink-0">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant font-bold text-sm">GA</div>
+</div>
+<div class="flex-1 overflow-hidden">
+<div class="flex justify-between items-baseline">
+<h3 class="font-label-md text-label-md text-on-surface truncate">Grading Assistant</h3>
+<span class="text-label-sm text-secondary">Tue</span>
+</div>
+<p class="text-body-sm text-secondary truncate">Feedback for "UX Design Systems" has been posted.</p>
+</div>
+<div class="bg-primary text-on-primary w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">1</div>
+</div>
+<!-- More Conversations... -->
+<div class="p-md flex items-start gap-3 hover:bg-surface-container-low transition-colors cursor-pointer border-l-4 border-transparent opacity-60">
+<div class="relative flex-shrink-0">
+<img class="w-10 h-10 rounded-full" data-alt="Portrait of a young professional woman with a friendly smile, wearing a yellow sweater. Warm studio lighting with a neutral gray background. Sharp focus on facial details, modern corporate portrait style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKtVp8xK36iCuNlTxXOJI69me3jKTZ-90XBq9fIQ9CjHzyyFnu_8V8YNohQXMfNRxdTaes3LfimtYTNq3d8UFG0UlCR2qNaeDPoMWioiaYC8K1AYEbLaY-wiOAEKOMqHvFywmRIHltr2Ym9d-4aq-sD1xiTGbkVF3FDPlIBtuhabxDRymm-l10J4QJLrpqVDfH28HLoy-goSyL_yiFCKV7H0lbelYxYFagUsOZzynkBGhlUaaI31RrOoBTpiTtDrmUtgTYQ9o0NHNG"/>
+</div>
+<div class="flex-1 overflow-hidden">
+<div class="flex justify-between items-baseline">
+<h3 class="font-label-md text-label-md text-on-surface truncate">Sarah Jenkins</h3>
+<span class="text-label-sm text-secondary">24 Oct</span>
+</div>
+<p class="text-body-sm text-secondary truncate">Thank you for sharing those notes!</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Chat Thread Pane (Right) -->
+<section class="flex-1 flex flex-col bg-surface overflow-hidden">
+<!-- Chat Header -->
+<div class="h-16 px-lg flex items-center justify-between border-b border-outline-variant bg-surface-container-lowest">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full" data-alt="A senior male professor with grey hair and glasses, looking thoughtful and friendly in a professional academic setting. The background is a soft-focus office with books. Lighting is natural and warm, emphasizing wisdom and approachability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjGTv3xUlwjAnz2bsGVsOXsrcAcnH7jD1Qg6M3ZSUxFCTXizMPXgsQOLxP-7h3ghrVi0oLPR4-_sHkUP5MsLYujdLDErYsZv6UZNwRvdMN3AUstGLspCROTuSv8vF0K2YfPwZzVzb695zEXMKr_0OZ1DhB40uTbpfr4fsHmbo8enXsF4om2XWv5O6jSHnVxaarVBAtAlZ1YyOpTxGlFG_LBHwKCLN6nt6NeH-_xB0dF5Va9YNz8W-vIfc8p0MZtiBuqqKKNl6s_hEq"/>
+<div>
+<h2 class="font-h3 text-h3 leading-tight">Prof. Julian Sterling</h2>
+<p class="text-label-sm text-green-600 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Online
+                            </p>
+</div>
+</div>
+<div class="flex gap-1">
+<button class="p-2 hover:bg-surface-container rounded-lg transition-colors text-secondary">
+<span class="material-symbols-outlined">call</span>
+</button>
+<button class="p-2 hover:bg-surface-container rounded-lg transition-colors text-secondary">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+<button class="p-2 hover:bg-surface-container rounded-lg transition-colors text-secondary">
+<span class="material-symbols-outlined">info</span>
+</button>
+</div>
+</div>
+<!-- Messages Area -->
+<div class="flex-1 overflow-y-auto p-lg space-y-6 flex flex-col">
+<!-- Date Divider -->
+<div class="flex items-center gap-4 py-4">
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+<span class="text-label-sm text-secondary uppercase tracking-widest font-bold">Today</span>
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+</div>
+<!-- Message Bubble: Incoming -->
+<div class="flex gap-3 max-w-[80%]">
+<img class="w-8 h-8 rounded-full flex-shrink-0 mt-1" data-alt="A senior male professor with grey hair and glasses, looking thoughtful and friendly in a professional academic setting. The background is a soft-focus office with books. Lighting is natural and warm, emphasizing wisdom and approachability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnSAYvAhlt8RODWIE_Da2xPsjDtMUDiZK4K0XkWqZ7Tejc9wkr_VBrU7g40QTPmsAGwfVIO5VMAXO9pTLYRWIfsECdg1M04m0c7WbW2awMSzhDKOkmkL07H3BvjawMbXdJ3Gp89aUohnUXu2VB5dssVyaqJwPyS1MtfQblSa4T_jECjuXda8u5392aRtSOzGRo4_vA-2-OURn6Rb34lDk6BmUE2P_IqJt1S6FhhacoBB93NfaxDb_BqEuSE4XaT28STaFv8h8bKSNm"/>
+<div>
+<div class="bg-surface-container-highest text-on-surface p-4 rounded-xl rounded-tl-none shadow-sm">
+<p class="text-body-md">Good morning, Elena. I've had a chance to look over your initial thesis proposal regarding adaptive LMS interfaces. It's a very promising direction.</p>
+</div>
+<span class="text-[10px] text-secondary mt-1 ml-1">10:42 AM</span>
+</div>
+</div>
+<!-- Message Bubble: Incoming -->
+<div class="flex gap-3 max-w-[80%]">
+<img class="w-8 h-8 rounded-full flex-shrink-0 mt-1" data-alt="A senior male professor with grey hair and glasses, looking thoughtful and friendly in a professional academic setting. The background is a soft-focus office with books. Lighting is natural and warm, emphasizing wisdom and approachability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_78F8KQxUeWLAFemPOueA6C53q-lZom2_4M3DGpB0CkK1UXSILlaGqUii3mQtrKqjfShk94XqS11TE3nIQ0HCUgeFga2ZZeghIlY2RfZwelEATsihWk3SrrVy3s_KppAlHJ8yUdBNPzmjMueqd4cTLmBTtGruzPD5c83DcBUZVWBBMWkoVweQkLDbwjXSCKq5pfadCms1jwaa6UvsujnZB-VsbtrYbbRqyeyYJSGCIuPR1KZjrxknpnM9rqflfY6ltxjOA3qcs4B5"/>
+<div>
+<div class="bg-surface-container-highest text-on-surface p-4 rounded-xl rounded-tl-none shadow-sm">
+<p class="text-body-md">I've attached a couple of papers that might help you solidify your literature review. Have you considered looking into the cognitive load impact of dynamic UI layouts?</p>
+</div>
+<!-- Attachment Card -->
+<div class="mt-2 p-3 bg-surface-container-lowest border border-outline-variant rounded-lg flex items-center gap-3 cursor-pointer hover:border-primary transition-colors">
+<div class="w-10 h-10 bg-red-50 text-red-600 rounded flex items-center justify-center">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md">Cognitive_Load_Adaptive_LMS.pdf</p>
+<p class="text-label-sm text-secondary">2.4 MB • PDF Document</p>
+</div>
+<span class="material-symbols-outlined text-secondary">download</span>
+</div>
+<span class="text-[10px] text-secondary mt-1 ml-1">10:43 AM</span>
+</div>
+</div>
+<!-- Message Bubble: Outgoing -->
+<div class="flex flex-row-reverse gap-3 max-w-[80%] self-end">
+<div class="flex flex-col items-end">
+<div class="bg-primary text-on-primary p-4 rounded-xl rounded-tr-none shadow-md">
+<p class="text-body-md">Thank you so much, Professor Sterling! I haven't explored the cognitive load aspect in depth yet, but it makes perfect sense for this study. I'll read through these papers today.</p>
+</div>
+<div class="flex items-center gap-1 mt-1 mr-1">
+<span class="text-[10px] text-secondary">10:45 AM</span>
+<span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Typing Indicator (Simulated) -->
+<div class="flex gap-3 items-center opacity-70">
+<img class="w-8 h-8 rounded-full" data-alt="A senior male professor with grey hair and glasses, looking thoughtful and friendly in a professional academic setting. The background is a soft-focus office with books. Lighting is natural and warm, emphasizing wisdom and approachability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYb7J5sP2X2F1_wcDVKBUkz4gn7w7IfZqEvM2WOHjt5x8l9wKdkc_40wy6rEIH8jNVjHCtns5rsGKAstM15w95DTjUwDAA2DYabKKor9Rwc9v-ITseBsTSw_9l7iUjY5I1qEmjlDtJJE5cMJ54jy3UJgacT-roAdIhPWf3yAX_Y18kp9B93IAS6S2joAUZRgpFFceB4Oytlo02oVNoT14RgxnHTe3DNiKpe9kRAvxm2ESR16zm0poiUymN2tLemZQcEWB7IDh5wyu5"/>
+<div class="bg-surface-container-low px-3 py-2 rounded-full flex gap-1">
+<span class="w-1.5 h-1.5 bg-secondary rounded-full animate-bounce"></span>
+<span class="w-1.5 h-1.5 bg-secondary rounded-full animate-bounce [animation-delay:0.2s]"></span>
+<span class="w-1.5 h-1.5 bg-secondary rounded-full animate-bounce [animation-delay:0.4s]"></span>
+</div>
+</div>
+</div>
+<!-- Composer -->
+<div class="p-lg bg-surface-container-lowest border-t border-outline-variant">
+<div class="flex items-end gap-3 bg-surface-container-low border border-outline-variant p-2 rounded-xl focus-within:ring-1 focus-within:ring-primary focus-within:border-primary transition-all">
+<button class="p-2 text-secondary hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+<div class="flex-1">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-body-md py-2 px-1 resize-none max-h-32 min-h-[40px]" placeholder="Type a message..." rows="1"></textarea>
+</div>
+<div class="flex gap-1 pb-1 pr-1">
+<button class="p-2 text-secondary hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-all">
+<span class="material-symbols-outlined">sentiment_satisfied</span>
+</button>
+<button class="p-2 bg-primary text-on-primary rounded-lg flex items-center justify-center hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+<div class="flex justify-between items-center mt-2 px-1">
+<p class="text-[10px] text-secondary font-medium italic">Press Shift + Enter for a new line</p>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-[16px] text-secondary cursor-pointer hover:text-primary">image</span>
+<span class="material-symbols-outlined text-[16px] text-secondary cursor-pointer hover:text-primary">attach_file</span>
+<span class="material-symbols-outlined text-[16px] text-secondary cursor-pointer hover:text-primary">mic</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<script>
+        // Micro-interactions for auto-expanding textarea
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Hover effect for list items
+        const conversationItems = document.querySelectorAll('section > div.overflow-y-auto > div');
+        conversationItems.forEach(item => {
+            item.addEventListener('click', () => {
+                conversationItems.forEach(i => {
+                    i.classList.remove('bg-surface-container', 'border-primary');
+                    i.classList.add('border-transparent');
+                });
+                item.classList.add('bg-surface-container', 'border-primary');
+                item.classList.remove('border-transparent');
+            });
+        });
+    </script>
+<script src="/stitch/lumora/bridge.js"></script>
+</body></html>

@@ -14,6 +14,13 @@ export interface PublicUser {
   locale: string;
   notificationPreferences: { email: boolean; sms: boolean; inApp: boolean };
   gamification: { totalPoints: number; leaderboardOptOut: boolean };
+  institutionFeatureFlags?: {
+    nativeLiveClassroom: boolean;
+    zoomIntegration: boolean;
+    teamsIntegration: boolean;
+    alumniPortal: boolean;
+    gamification: boolean;
+  };
   createdAt?: Date;
   lastLoginAt?: Date;
 }

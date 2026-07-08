@@ -19,6 +19,13 @@ const liveSessionSchema = new Schema(
     providerMeetingId: { type: String },
     providerRecordingUrl: { type: String },
     recordingStorageKey: { type: String },
+    recordingDurationSeconds: { type: Number },
+    recordingStatus: {
+      type: String,
+      enum: ['not_available', 'processing', 'available', 'failed'],
+      default: 'not_available',
+    },
+    recordingError: { type: String },
     startedAt: { type: Date },
     endedAt: { type: Date },
     cancelledAt: { type: Date },

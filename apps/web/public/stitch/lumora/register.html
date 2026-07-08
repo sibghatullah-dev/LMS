@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Register | Lumora LMS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c6c6cd",
+                    "on-tertiary-fixed": "#171c1f",
+                    "surface": "#f8f9ff",
+                    "inverse-primary": "#bec6e0",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-surface-variant": "#45464d",
+                    "tertiary": "#000000",
+                    "background": "#f8f9ff",
+                    "surface-dim": "#ccdbf2",
+                    "secondary-container": "#d0e1fb",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-background": "#0d1c2d",
+                    "on-primary-fixed": "#131b2e",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#c3c7cb",
+                    "surface-bright": "#f8f9ff",
+                    "on-tertiary-container": "#808488",
+                    "primary": "#000000",
+                    "surface-container-highest": "#d4e4fa",
+                    "outline": "#76777d",
+                    "on-surface": "#0d1c2d",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-primary-container": "#7c839b",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#131b2e",
+                    "secondary": "#505f76",
+                    "surface-container-low": "#eef4ff",
+                    "surface-container": "#e5efff",
+                    "surface-container-high": "#dbe9ff",
+                    "inverse-surface": "#233143",
+                    "error": "#ba1a1a",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "base": "4px",
+                    "container-max": "1440px",
+                    "sidebar-width": "240px",
+                    "xs": "4px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "h2": ["Inter"],
+                    "display": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "h1": ["Inter"],
+                    "h3": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "display": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f8f9ff;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-input-focus {
+            transition: all 0.2s ease-in-out;
+        }
+        .form-input-focus:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+        }
+        .role-card {
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .role-radio:checked + .role-card {
+            border-color: #000000;
+            background-color: #f0f4ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-md bg-surface">
+<main class="w-full max-w-[440px] animate-in fade-in duration-700 slide-in-from-bottom-4">
+<!-- Header / Logo Area -->
+<div class="text-center mb-xl">
+<h1 class="font-h1 text-h1 text-on-background mb-base">Lumora LMS</h1>
+<p class="font-body-md text-body-md text-secondary">Create your academic portal account</p>
+</div>
+<!-- Registration Card -->
+<div class="bg-surface-container-lowest border border-outline-variant p-xl rounded-lg">
+<form class="space-y-md" id="registrationForm">
+<!-- Role Selection -->
+<div class="space-y-sm mb-lg">
+<label class="font-label-md text-label-md text-on-surface-variant block">I am a...</label>
+<div class="grid grid-cols-2 gap-sm">
+<label class="cursor-pointer">
+<input checked="" class="hidden role-radio" name="role" type="radio" value="student"/>
+<div class="role-card flex flex-col items-center justify-center py-md px-sm border border-outline-variant rounded bg-white text-center">
+<span class="material-symbols-outlined mb-xs text-secondary">school</span>
+<span class="font-label-md text-label-md">Student</span>
+</div>
+</label>
+<label class="cursor-pointer">
+<input class="hidden role-radio" name="role" type="radio" value="instructor"/>
+<div class="role-card flex flex-col items-center justify-center py-md px-sm border border-outline-variant rounded bg-white text-center">
+<span class="material-symbols-outlined mb-xs text-secondary">co_present</span>
+<span class="font-label-md text-label-md">Instructor</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Full Name -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant block" for="full_name">Full Name</label>
+<input class="w-full px-md py-sm bg-white border border-outline-variant rounded font-body-sm text-body-sm form-input-focus placeholder:text-outline" id="full_name" name="full_name" placeholder="John Doe" required="" type="text"/>
+</div>
+<!-- Email -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant block" for="email">Email Address</label>
+<input class="w-full px-md py-sm bg-white border border-outline-variant rounded font-body-sm text-body-sm form-input-focus placeholder:text-outline" id="email" name="email" placeholder="name@institution.edu" required="" type="email"/>
+</div>
+<!-- Institution Slug -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant block" for="slug">Institution Slug</label>
+<div class="relative">
+<input class="w-full px-md py-sm bg-white border border-outline-variant rounded font-body-sm text-body-sm form-input-focus placeholder:text-outline" id="slug" name="slug" placeholder="university-name" required="" type="text"/>
+<span class="absolute right-md top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-outline">.lumora.edu</span>
+</div>
+</div>
+<!-- Password -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant block" for="password">Password</label>
+<div class="relative">
+<input class="w-full px-md py-sm bg-white border border-outline-variant rounded font-body-sm text-body-sm form-input-focus placeholder:text-outline" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-md top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors" onclick="togglePassword()" type="button">
+<span class="material-symbols-outlined text-[18px]" id="pw-icon">visibility</span>
+</button>
+</div>
+<p class="font-label-sm text-label-sm text-outline">Minimum 8 characters</p>
+</div>
+<!-- Terms -->
+<div class="flex items-start gap-sm pt-xs">
+<input class="mt-0.5 rounded border-outline-variant text-primary focus:ring-primary-container" id="terms" name="terms" required="" type="checkbox"/>
+<label class="font-body-sm text-body-sm text-on-surface-variant" for="terms">
+                        I agree to the <a class="text-primary hover:underline underline-offset-2" href="#">Terms of Service</a> and <a class="text-primary hover:underline underline-offset-2" href="#">Privacy Policy</a>.
+                    </label>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-primary text-on-primary py-sm rounded font-label-md text-label-md hover:bg-opacity-90 active:scale-[0.98] transition-all mt-md flex items-center justify-center gap-xs" type="submit">
+                    Create Account
+                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</form>
+<div class="mt-lg pt-lg border-t border-outline-variant text-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    Already have an account? 
+                    <a class="font-label-md text-label-md text-primary hover:underline underline-offset-4 ml-xs" href="#">Sign in</a>
+</p>
+</div>
+</div>
+<!-- Footer Help -->
+<footer class="mt-xl flex justify-center gap-xl">
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary flex items-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[14px]">help</span>
+                Support
+            </a>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary flex items-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[14px]">language</span>
+                English (US)
+            </a>
+</footer>
+</main>
+<script>
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('pw-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerText = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.innerText = 'visibility';
+            }
+        }
+
+        // Mock interaction for role cards
+        document.querySelectorAll('.role-radio').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                // Potential logic for UI shifts based on role (e.g. asking for Faculty ID vs Student ID)
+                console.log(`Role switched to: ${e.target.value}`);
+            });
+        });
+
+        // Form submission feedback
+        document.getElementById('registrationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<span class="animate-spin material-symbols-outlined">progress_activity</span> Processing...`;
+            
+            setTimeout(() => {
+                btn.innerHTML = `Account Created`;
+                btn.classList.remove('bg-primary');
+                btn.classList.add('bg-green-600');
+            }, 1500);
+        });
+    </script>
+<script src="/stitch/lumora/bridge.js"></script>
+</body></html>

@@ -7,3 +7,6 @@ export * from './assessment.schema';
 export * from './notification.schema';
 export * from './privacy.schema';
 export * from './live-session.schema';
+export * from './gamification.schema';
+export * from './collaboration.schema';
+export * from './event.schema';

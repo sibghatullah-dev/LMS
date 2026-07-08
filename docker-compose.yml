@@ -59,3 +59,16 @@ services:
       - "1025:1025" # SMTP
       - "8025:8025" # web inbox -> http://localhost:8025
     restart: unless-stopped
+
+  media:
+    image: node:22-alpine
+    container_name: lumora-media
+    working_dir: /app
+    command: sh -c "corepack enable && pnpm --filter @lumora/media start"
+    environment:
+      MEDIA_SERVICE_PORT: 3010
+    ports:
+      - "3010:3010"
+    volumes:
+      - ./:/app
+    restart: unless-stopped

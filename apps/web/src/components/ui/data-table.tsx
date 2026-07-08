@@ -2,12 +2,6 @@
 
 import { cn } from '@/lib/cn';
 
-/**
- * Data Table (UI/UX §2.5): grading queues, admin user lists, audit log.
- * - Numeric columns render in IBM Plex Mono (tabular) via `numeric: true`.
- * - Sticky header.
- * - Optional row-level bulk-select checkboxes (selection state owned by parent).
- */
 export interface Column<T> {
   key: string;
   header: string;
@@ -41,12 +35,12 @@ export function DataTable<T>({
   const allSelected = selection ? allKeys.every((k) => selection.selectedKeys.has(k)) : false;
 
   return (
-    <div className="overflow-x-auto rounded-card border border-neutral-200 bg-surface-0">
+    <div className="overflow-x-auto rounded-lg border border-neutral-200 bg-surface-0">
       <table className="w-full border-collapse text-left text-sm">
-        <thead className="sticky top-0 bg-paper-50">
+        <thead className="sticky top-0 bg-paper-100">
           <tr className="border-b border-neutral-200">
             {selection && (
-              <th scope="col" className="w-10 px-3 py-2.5">
+              <th scope="col" className="w-10 px-3 py-2">
                 <input
                   type="checkbox"
                   aria-label="Select all rows"
@@ -60,7 +54,7 @@ export function DataTable<T>({
                 key={col.key}
                 scope="col"
                 className={cn(
-                  'px-4 py-2.5 text-caption font-medium uppercase tracking-[0.02em] text-neutral-600',
+                  'px-4 py-2 text-caption font-semibold uppercase text-neutral-500',
                   col.numeric && 'text-right',
                 )}
               >
@@ -83,7 +77,7 @@ export function DataTable<T>({
             rows.map((row) => {
               const key = rowKey(row);
               return (
-                <tr key={key} className="border-b border-neutral-200 last:border-0">
+                <tr key={key} className="border-b border-neutral-200 last:border-0 hover:bg-paper-100">
                   {selection && (
                     <td className="px-3 py-2.5">
                       <input
@@ -98,8 +92,8 @@ export function DataTable<T>({
                     <td
                       key={col.key}
                       className={cn(
-                        'px-4 py-2.5 text-ink-900',
-                        col.numeric && 'text-right font-mono tabular-nums',
+                        'px-4 py-3 text-ink-900',
+                        col.numeric && 'text-right font-semibold tabular-nums',
                       )}
                     >
                       {col.cell(row)}

@@ -3,6 +3,7 @@ import { loadEnv, QUEUE_NAMES } from '@lumora/config';
 import {
   connectToDatabase,
   createDueLiveSessionReminders,
+  createDueEventReminders,
   getPendingEmailNotifications,
   markNotificationEmailFailed,
   markNotificationEmailSent,
@@ -31,7 +32,10 @@ function redisConnectionOptions(redisUrl: string) {
 }
 
 async function dispatchPendingNotificationEmails(limit = 25): Promise<{ reminders: number; sent: number }> {
-  const reminders = await createDueLiveSessionReminders();
+  const [liveSessionReminders, eventReminders] = await Promise.all([
+    createDueLiveSessionReminders(),
+    createDueEventReminders(),
+  ]);
   const pending = await getPendingEmailNotifications(limit);
   let sent = 0;
 
@@ -53,7 +57,7 @@ async function dispatchPendingNotificationEmails(limit = 25): Promise<{ reminder
     }
   }
 
-  return { reminders: reminders.created, sent };
+  return { reminders: liveSessionReminders.created + eventReminders.created, sent };
 }
 
 function escapeHtml(value: string): string {
